@@ -1,8 +1,9 @@
 ---
-// Final CTA — the waitlist. Posts to a placeholder endpoint for now.
-// Update the action="" to a real Formspree / Buttondown / custom URL
-// when one's ready. Includes a no-JS fallback (works without script)
-// and a tiny progressive-enhancement script that shows a thank-you.
+// Final CTA — the waitlist. POSTs to api.trysiko.com, which is a
+// Cloudflare Worker that validates the email, adds it to the Resend
+// "Waitlist" audience, and sends a confirmation. JS intercepts the
+// submit so the user stays on this page; the form still works without
+// JS (the response will be a plain JSON body in that case).
 ---
 
 <section id="waitlist" class="section section-y bg-ink-900 text-cream-100 relative overflow-hidden">
@@ -28,7 +29,7 @@
       </p>
 
       <form
-        action="https://formspree.io/f/REPLACEME"
+        action="https://api.trysiko.com"
         method="POST"
         class="mt-10 flex flex-col sm:flex-row gap-3 max-w-[480px] mx-auto"
         id="waitlist-form"
@@ -49,10 +50,31 @@
         >
           Join
         </button>
+        {/* Honeypot — invisible to humans, fillable by naive bots.
+            The Worker silently succeeds (does nothing) when this is set. */}
+        <div
+          aria-hidden="true"
+          style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;"
+        >
+          <label for="waitlist-company">Company (leave this blank)</label>
+          <input
+            id="waitlist-company"
+            type="text"
+            name="company"
+            tabindex="-1"
+            autocomplete="off"
+          />
+        </div>
       </form>
-      <p class="mt-4 font-mono text-[11px] text-ink-300">
+      <p id="waitlist-disclaimer" class="mt-4 font-mono text-[11px] text-ink-300">
         We&rsquo;ll never share your email. Unsubscribe any time &mdash; one link in every email.
       </p>
+      <p
+        id="waitlist-error"
+        hidden
+        role="alert"
+        class="mt-4 font-mono text-[11px] text-rose-200"
+      ></p>
 
       <div
         id="waitlist-thanks"
@@ -73,20 +95,51 @@
   (function () {
     var form = document.getElementById('waitlist-form');
     var thanks = document.getElementById('waitlist-thanks');
+    var errorEl = document.getElementById('waitlist-error');
+    var disclaimer = document.getElementById('waitlist-disclaimer');
     if (!form || !thanks) return;
+
     form.addEventListener('submit', function (e) {
-      // The form's action is a placeholder until a real endpoint is wired.
-      // Until then, intercept and show the thanks state so the affordance
-      // works for a visiting parent. When a real endpoint is set, remove
-      // the preventDefault below so the form POSTs normally.
-      var actionAttr = form.getAttribute('action') || '';
-      if (actionAttr.indexOf('REPLACEME') > -1) {
-        e.preventDefault();
-        form.style.display = 'none';
-        thanks.hidden = false;
-        var p = form.parentNode && form.parentNode.querySelector('p.font-mono');
-        if (p) p.style.display = 'none';
+      e.preventDefault();
+
+      var button = form.querySelector('button[type="submit"]');
+      var originalLabel = button ? button.textContent : '';
+      if (button) {
+        button.disabled = true;
+        button.textContent = 'Joining…';
       }
+      if (errorEl) errorEl.hidden = true;
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+      })
+        .then(function (res) {
+          return res.json().catch(function () { return {}; });
+        })
+        .then(function (data) {
+          if (data && data.ok) {
+            form.style.display = 'none';
+            if (disclaimer) disclaimer.style.display = 'none';
+            thanks.hidden = false;
+          } else {
+            if (button) { button.disabled = false; button.textContent = originalLabel; }
+            if (errorEl) {
+              errorEl.textContent =
+                data && data.error === 'invalid_email'
+                  ? 'Hmm — that email doesn’t look right. Try again?'
+                  : 'Something went sideways. Try again in a moment?';
+              errorEl.hidden = false;
+            }
+          }
+        })
+        .catch(function () {
+          if (button) { button.disabled = false; button.textContent = originalLabel; }
+          if (errorEl) {
+            errorEl.textContent = 'Network hiccup — try again in a moment?';
+            errorEl.hidden = false;
+          }
+        });
     });
   })();
 </script>
