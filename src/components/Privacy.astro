@@ -1,9 +1,6 @@
 ---
-// Privacy section, mono-treated like a spec sheet. Wording matches what
-// the onboarding screen says: "Screenshots are sent to Claude (Anthropic)
-// for analysis. They're not stored on Siko servers — only locally on
-// this Mac." Plus details about the 64×40 thumbnail digest used for
-// activity detection (which can't be read by anyone, including us).
+// Privacy section, mono-treated like a spec sheet. Three columns:
+// what stays local, what gets sent to the AI model, what we never do.
 ---
 
 <section id="privacy" class="section section-y">
@@ -14,10 +11,8 @@
         Built for anyone who cares about this stuff.
       </h2>
       <p class="mt-5 text-ink-600 text-[16.5px] leading-[1.65] max-w-[60ch]">
-        Siko requires macOS Screen Recording permission. We use it to
-        capture one frame at a time, only when you ask for help. Tiny
-        64&times;40 pixel thumbnails handle activity detection &mdash; they&rsquo;re
-        too small to read, by us or anyone.
+        Siko only looks at your screen when you ask. Here&rsquo;s what
+        stays local, what we send to the AI model, and what we never do.
       </p>
     </div>
 
@@ -31,7 +26,7 @@
           <li>Session history</li>
           <li>The per-session reports</li>
           <li>Cross-session signals (recurring concepts, breakthroughs)</li>
-          <li>Parent email setting</li>
+          <li>Report email setting</li>
           <li>Hint outcomes &amp; preferences</li>
         </ul>
         <p class="mt-5 text-[12px] text-ink-500 leading-relaxed">
@@ -42,7 +37,7 @@
 
       <div class="bg-cream-50 p-7 md:p-8">
         <div class="font-mono text-[11px] uppercase tracking-eyebrow text-dusty mb-4">
-          → Sent to Claude (Anthropic)
+          → Sent to the AI model
         </div>
         <h3 class="font-serif text-[19px] text-ink-900 mb-4">Only when asked</h3>
         <ul class="space-y-2.5 font-mono text-[12.5px] text-ink-700 leading-relaxed">
@@ -52,8 +47,8 @@
           <li>Per-session summaries when you generate a Patterns synthesis</li>
         </ul>
         <p class="mt-5 text-[12px] text-ink-500 leading-relaxed">
-          Sent to Anthropic only when you press <kbd class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-ink-100 border border-ink-100">⌘⇧Space</kbd> or
-          tap a Siko action. Subject to Anthropic&rsquo;s data retention policy.
+          Sent to the AI model only when you press <kbd class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-ink-100 border border-ink-100">⌘⇧Space</kbd> or
+          tap a Siko action.
         </p>
       </div>
 
