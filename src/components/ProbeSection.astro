@@ -1,0 +1,119 @@
+---
+import HomeworkPage from './product/HomeworkPage.astro';
+---
+
+<section id="probe" class="section section-y">
+  <div class="container-page">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+      <div class="lg:col-span-5">
+        <p class="eyebrow">Between hints</p>
+        <h2 class="mt-4 font-serif text-display-2 text-ink-900 leading-[1.05]">
+          Before the deeper hint, Siko asks:<br />
+          which step are <span class="accent-italic">you</span> stuck on?
+        </h2>
+        <p class="mt-6 text-ink-600 text-[16.5px] leading-[1.65]">
+          Between hint 1 and hint 2, Siko pauses and shows dashed boxes around
+          each line of the student&rsquo;s work. They tap the step they want to look
+          back at &mdash; or type it.
+        </p>
+        <ul class="mt-7 space-y-4 text-[15px] text-ink-700">
+          <li class="flex gap-3">
+            <span class="font-mono text-sage mt-0.5">✓</span>
+            <span><strong class="text-ink-900 font-medium">Tap the right step.</strong>
+              The next hint comes with <em class="not-italic font-mono text-[13px] text-sage">&ldquo;you&rsquo;re looking in the right place&rdquo;</em>.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="font-mono text-terra mt-0.5">↗</span>
+            <span><strong class="text-ink-900 font-medium">Tap a different step.</strong>
+              A soft orange ring marks your tap, and the next hint redirects:
+              <em class="not-italic font-mono text-[13px] text-terra">&ldquo;look here instead&rdquo;</em>.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="font-mono text-dusty mt-0.5">◎</span>
+            <span><strong class="text-ink-900 font-medium">Or type it.</strong>
+              &ldquo;the part where I multiplied 5&rdquo; works just as well as a tap.</span>
+          </li>
+        </ul>
+        <p class="mt-8 text-ink-500 text-[14.5px] leading-[1.65] max-w-[44ch]">
+          Why this exists: handing out hints without any diagnostic work from
+          the student makes them dependent on the hints. Asking
+          <em>which step?</em> makes them re-read their own work first &mdash; which
+          is the whole point of homework.
+        </p>
+      </div>
+
+      <div class="lg:col-span-7">
+        <div class="probe-scene">
+          <HomeworkPage showProbeTargets={true} />
+          {/* A small floating prompt that overlays the homework — mirrors
+              the probe section that appears inside the hint card. */}
+          <div class="probe-prompt">
+            <div class="prompt-q">
+              Before the next hint &mdash; which step do you want to look back at?
+            </div>
+            <div class="prompt-hint">(Tap any step in your work)</div>
+            <div class="prompt-links">
+              <span class="link-mute">or type instead</span>
+              <span class="link-mute">just show me the hint</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .probe-scene {
+    position: relative;
+  }
+  /* Sit inside the homework window's bottom-right empty area so the
+     prompt visually belongs to the homework, not floating beneath it.
+     The student lines occupy the left ~50% of the paper; the bottom-
+     right corner is empty space where this overlay reads naturally. */
+  .probe-prompt {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    width: 300px;
+    padding: 12px 14px;
+    background: rgba(20, 20, 24, 0.96);
+    border: 1px solid rgba(255, 216, 77, 0.40);
+    border-radius: 10px;
+    box-shadow: 0 14px 36px rgba(20, 18, 12, 0.30), 0 8px 18px rgba(20, 18, 12, 0.18);
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter Variable', Inter, sans-serif;
+    font-size: 12.5px;
+    line-height: 1.45;
+    z-index: 4;
+  }
+  .prompt-q {
+    color: rgba(255, 240, 200, 0.94);
+    margin-bottom: 4px;
+  }
+  .prompt-hint {
+    color: rgba(255, 255, 255, 0.58);
+    font-style: italic;
+    margin-bottom: 8px;
+    font-size: 11.5px;
+  }
+  .prompt-links {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .link-mute {
+    color: rgba(255, 255, 255, 0.58);
+    font-size: 11.5px;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 3px;
+  }
+  @media (max-width: 1024px) {
+    .probe-prompt {
+      right: 10px;
+      bottom: 10px;
+      width: 270px;
+    }
+  }
+</style>

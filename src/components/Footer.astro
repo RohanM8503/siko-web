@@ -1,0 +1,79 @@
+---
+import SikoMark from './SikoMark.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-ink-900 text-cream-100">
+  <div class="container-page section pt-20 pb-10">
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-10 md:gap-8">
+      <div class="col-span-2 md:col-span-2">
+        <a href="/" class="inline-flex items-center gap-2">
+          <SikoMark size={20} tone="#FBF8F1" />
+          <span
+            class="font-serif text-[22px] tracking-tight"
+            style="font-variation-settings: 'opsz' 16, 'SOFT' 50;"
+          >
+            siko
+          </span>
+        </a>
+        <p class="mt-4 max-w-[28ch] text-ink-300 text-[14px] leading-relaxed">
+          A patient teacher that lives on your desk. macOS, K&ndash;12.
+        </p>
+      </div>
+
+      <div class="font-mono text-[12px]">
+        <div class="text-ink-400 uppercase tracking-eyebrow mb-3">Product</div>
+        <ul class="space-y-2">
+          <li><a href="#how" class="text-ink-200 hover:text-cream transition-colors">How it works</a></li>
+          <li><a href="#method" class="text-ink-200 hover:text-cream transition-colors">The method</a></li>
+          <li><a href="#features" class="text-ink-200 hover:text-cream transition-colors">Features</a></li>
+          <li><a href="#report" class="text-ink-200 hover:text-cream transition-colors">Parent report</a></li>
+          <li><a href="#patterns" class="text-ink-200 hover:text-cream transition-colors">Patterns dashboard</a></li>
+        </ul>
+      </div>
+
+      <div class="font-mono text-[12px]">
+        <div class="text-ink-400 uppercase tracking-eyebrow mb-3">Company</div>
+        <ul class="space-y-2">
+          <li><a href="#about" class="text-ink-200 hover:text-cream transition-colors">About</a></li>
+          <li><a href="#privacy" class="text-ink-200 hover:text-cream transition-colors">Privacy</a></li>
+          <li><a href="#faq" class="text-ink-200 hover:text-cream transition-colors">FAQ</a></li>
+          <li><a href="mailto:hi@trysiko.com" class="text-ink-200 hover:text-cream transition-colors">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="font-mono text-[12px]">
+        <div class="text-ink-400 uppercase tracking-eyebrow mb-3">Connect</div>
+        <ul class="space-y-2">
+          <li><a href="#waitlist" class="text-ink-200 hover:text-cream transition-colors">Waitlist</a></li>
+          <li><a href="#" class="text-ink-200 hover:text-cream transition-colors">X / Twitter</a></li>
+        </ul>
+      </div>
+    </div>
+
+    {/* Large outlined wordmark — LangChain-style brand statement at the
+        close of the page. Sized fluidly so it always feels confident
+        without ever clipping the viewport. */}
+    <div class="mt-20 pt-10 border-t border-ink-700/60 select-none">
+      <div
+        class="font-serif italic leading-[0.85] text-transparent"
+        style="font-variation-settings: 'opsz' 144, 'SOFT' 50; font-size: clamp(96px, 22vw, 320px); -webkit-text-stroke: 1px rgba(251, 248, 241, 0.18);"
+        aria-hidden="true"
+      >
+        siko.
+      </div>
+    </div>
+
+    <div class="mt-10 flex flex-col md:flex-row gap-3 md:items-end md:justify-between font-mono text-[11px] text-ink-400">
+      <div>&copy; {year} Siko. Built quietly.</div>
+      <div class="md:text-right">
+        macOS&nbsp;13+
+        <span class="mx-2 text-ink-600">·</span>
+        K&ndash;12
+        <span class="mx-2 text-ink-600">·</span>
+        Honest with your inbox
+      </div>
+    </div>
+  </div>
+</footer>

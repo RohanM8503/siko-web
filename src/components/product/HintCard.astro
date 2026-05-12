@@ -1,0 +1,228 @@
+---
+// Siko's hint card — the dark floating panel that sits next to the
+// yellow bbox. Composition follows overlay.js renderHintActions:
+//   - meta tag: SUBJECT · L1/3 (or L2/3, L3/3)
+//   - hint text body
+//   - action button row (varies by level)
+//   - footer with keyboard hints
+//
+// Levels:
+//   L1 → Deeper hint · Got it · ✕             (and a footer kbd hint)
+//   L2 → same as L1, with a "chip" above meta if probe resolved
+//   L3 → Try one with me → · Quiz me on this · Explain concept · Got it · ✕
+//         + secondary "show the answer" link
+interface Props {
+  level?: 1 | 2 | 3;
+  subject?: string;
+  /** Body copy. The actual product copy from lib/prompts.js examples
+   *  is great default fodder — see Method.astro callsites. */
+  hint?: string;
+  /** Optional small chip above meta (chip-close | chip-wrong | chip-vague).
+   *  See overlay.html .hint-chip family. Only used at L2. */
+  chip?: { kind: 'close' | 'wrong' | 'vague'; text: string } | null;
+  class?: string;
+  style?: string;
+}
+const {
+  level = 1,
+  subject = 'math',
+  hint = "Take another look at the second term on your first line — what does 5 multiply across?",
+  chip = null,
+  class: className = '',
+  style = '',
+} = Astro.props;
+
+const levelTag = `L${level}/3`;
+const isL3 = level === 3;
+---
+
+<div class:list={['hint-card', className]} style={style}>
+  {chip && (
+    <div class:list={['chip', `chip-${chip.kind}`]}>
+      <span class="chip-icon">
+        {chip.kind === 'close' ? '✓' : chip.kind === 'wrong' ? '↗' : '◎'}
+      </span>
+      <span>{chip.text}</span>
+    </div>
+  )}
+
+  <div class="meta">
+    {subject.toUpperCase()} · {levelTag}
+  </div>
+
+  <div class="text">{hint}</div>
+
+  <div class="actions">
+    {!isL3 && <button type="button" class="btn">Deeper hint</button>}
+    {isL3 && <button type="button" class="btn btn-primary">Try one with me <span class="ar">→</span></button>}
+    {isL3 && <button type="button" class="btn">Quiz me on this</button>}
+    {isL3 && <button type="button" class="btn">Explain concept</button>}
+    <button type="button" class="btn btn-good">Got it</button>
+    <button type="button" class="btn btn-dismiss" aria-label="Dismiss">&times;</button>
+    {isL3 && (
+      <div class="secondary-row">
+        <button type="button" class="btn-link">show the answer</button>
+      </div>
+    )}
+  </div>
+
+  <div class="footer">
+    {level < 3 ? (
+      <>press <kbd>⌘⇧Space</kbd> for a deeper hint &nbsp;·&nbsp; <kbd>⌘⇧.</kbd> to dismiss</>
+    ) : (
+      <>last hint &nbsp;·&nbsp; <kbd>⌘⇧.</kbd> to dismiss &nbsp;·&nbsp; <kbd>⌘⇧Space</kbd> for a fresh look</>
+    )}
+  </div>
+</div>
+
+<style>
+  .hint-card {
+    max-width: 380px;
+    min-width: 280px;
+    padding: 12px 14px;
+    background: rgba(20, 20, 24, 0.96);
+    border: 1px solid rgba(255, 216, 77, 0.40);
+    border-radius: 10px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter Variable', Inter, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .meta {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 216, 77, 0.85);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .text {
+    color: white;
+    margin-bottom: 10px;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+    margin-bottom: 4px;
+  }
+  .btn {
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.92);
+    letter-spacing: 0.01em;
+    transition: background 140ms ease, border-color 140ms ease;
+  }
+  .btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.28);
+  }
+  .btn-primary {
+    background: rgba(255, 216, 77, 0.22);
+    border-color: rgba(255, 216, 77, 0.65);
+    color: rgba(255, 246, 215, 0.98);
+    padding: 7px 13px;
+    font-weight: 700;
+  }
+  .btn-primary:hover {
+    background: rgba(255, 216, 77, 0.34);
+    border-color: rgba(255, 216, 77, 0.90);
+  }
+  .ar { font-weight: 600; padding-left: 2px; }
+  .btn-good {
+    background: rgba(140, 220, 160, 0.16);
+    border-color: rgba(140, 220, 160, 0.45);
+    color: rgba(220, 250, 230, 0.96);
+  }
+  .btn-good:hover {
+    background: rgba(140, 220, 160, 0.28);
+    border-color: rgba(140, 220, 160, 0.65);
+  }
+  .btn-dismiss {
+    padding: 6px 8px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .secondary-row {
+    flex-basis: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 2px;
+  }
+  .btn-link {
+    font: inherit;
+    background: transparent;
+    border: none;
+    padding: 2px 4px;
+    font-size: 10.5px;
+    color: rgba(255, 255, 255, 0.50);
+    letter-spacing: 0.02em;
+    text-decoration: underline transparent;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    transition: color 140ms ease, text-decoration-color 140ms ease;
+  }
+  .btn-link:hover {
+    color: rgba(255, 240, 200, 0.85);
+    text-decoration-color: rgba(255, 216, 77, 0.45);
+  }
+  .footer {
+    display: block;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
+    font-size: 10.5px;
+    color: rgba(255, 255, 255, 0.62);
+    letter-spacing: 0.01em;
+  }
+  .footer kbd {
+    display: inline-block;
+    font: inherit;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 5px;
+    margin: 0 1px;
+    border-radius: 3px;
+    background: rgba(255, 216, 77, 0.14);
+    border: 1px solid rgba(255, 216, 77, 0.32);
+    color: rgba(255, 240, 200, 0.9);
+  }
+  /* Chip — small pill above the meta when probe resolves at L2 */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1.2;
+  }
+  .chip-close {
+    background: rgba(140, 220, 160, 0.18);
+    border: 1px solid rgba(140, 220, 160, 0.55);
+    color: rgba(220, 250, 230, 0.97);
+  }
+  .chip-wrong {
+    background: rgba(244, 162, 89, 0.18);
+    border: 1px solid rgba(244, 162, 89, 0.55);
+    color: rgba(255, 220, 180, 0.97);
+  }
+  .chip-vague {
+    background: rgba(140, 180, 230, 0.16);
+    border: 1px solid rgba(140, 180, 230, 0.50);
+    color: rgba(220, 232, 250, 0.97);
+  }
+  .chip-icon { font-size: 12px; line-height: 1; }
+</style>

@@ -1,0 +1,92 @@
+---
+// Final CTA — the waitlist. Posts to a placeholder endpoint for now.
+// Update the action="" to a real Formspree / Buttondown / custom URL
+// when one's ready. Includes a no-JS fallback (works without script)
+// and a tiny progressive-enhancement script that shows a thank-you.
+---
+
+<section id="waitlist" class="section section-y bg-ink-900 text-cream-100 relative overflow-hidden">
+  {/* Faint gold accent in the corner — a single, calm flourish. */}
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute -top-32 -right-32 w-[440px] h-[440px] rounded-full"
+    style="background: radial-gradient(closest-side, rgba(255, 216, 77, 0.16), transparent 70%);"
+  ></div>
+
+  <div class="container-page relative">
+    <div class="max-w-[640px] mx-auto text-center">
+      <p class="font-mono text-[11px] uppercase tracking-eyebrow text-gold-200">
+        Onboarding one student at a time
+      </p>
+      <h2 class="mt-5 font-serif text-display-2">
+        Get on the waitlist.
+      </h2>
+      <p class="mt-6 text-ink-200 text-[16.5px] leading-[1.6] max-w-[52ch] mx-auto">
+        You&rsquo;ll hear from us within a week of your first session &mdash;
+        not before. We&rsquo;ll send pricing, an invite link, and one quick note
+        on how to set the report email up. No marketing drip.
+      </p>
+
+      <form
+        action="https://formspree.io/f/REPLACEME"
+        method="POST"
+        class="mt-10 flex flex-col sm:flex-row gap-3 max-w-[480px] mx-auto"
+        id="waitlist-form"
+      >
+        <label class="sr-only" for="waitlist-email">Email address</label>
+        <input
+          id="waitlist-email"
+          type="email"
+          name="email"
+          required
+          placeholder="you@yourinbox.com"
+          class="flex-1 rounded-full px-5 py-3 bg-white/10 border border-white/20 placeholder:text-ink-400 text-cream focus:outline-none focus:ring-2 focus:ring-gold-300 focus:border-transparent"
+          autocomplete="email"
+        />
+        <button
+          type="submit"
+          class="rounded-full px-6 py-3 bg-gold-300 text-ink-900 font-medium hover:bg-gold-200 transition-colors"
+        >
+          Join
+        </button>
+      </form>
+      <p class="mt-4 font-mono text-[11px] text-ink-300">
+        We&rsquo;ll never share your email. Reply STOP to remove yourself at any time.
+      </p>
+
+      <div
+        id="waitlist-thanks"
+        hidden
+        class="mt-10 p-5 rounded-2xl border border-gold-200/30 bg-white/5"
+      >
+        <p class="font-serif text-[18px] text-cream">Thanks &mdash; you&rsquo;re on the list.</p>
+        <p class="mt-2 text-ink-200 text-[14px]">
+          We&rsquo;ll be in touch. In the meantime, you might enjoy the
+          <a href="#about" class="underline decoration-gold-300 underline-offset-4 hover:text-cream">founder note</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  (function () {
+    var form = document.getElementById('waitlist-form');
+    var thanks = document.getElementById('waitlist-thanks');
+    if (!form || !thanks) return;
+    form.addEventListener('submit', function (e) {
+      // The form's action is a placeholder until a real endpoint is wired.
+      // Until then, intercept and show the thanks state so the affordance
+      // works for a visiting parent. When a real endpoint is set, remove
+      // the preventDefault below so the form POSTs normally.
+      var actionAttr = form.getAttribute('action') || '';
+      if (actionAttr.indexOf('REPLACEME') > -1) {
+        e.preventDefault();
+        form.style.display = 'none';
+        thanks.hidden = false;
+        var p = form.parentNode && form.parentNode.querySelector('p.font-mono');
+        if (p) p.style.display = 'none';
+      }
+    });
+  })();
+</script>

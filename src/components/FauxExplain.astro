@@ -1,0 +1,90 @@
+---
+// Small inline mock of Siko's Explain Concept card with the structured
+// Rule / Why / Example / Watch out shape — the equation-rule format
+// from lib/prompts.js EXPLAIN_CONCEPT_PROMPT_TEMPLATE.
+//
+// Content here is a chemistry concept (balancing equations) — chosen
+// from test/scenarios/explain.js to demonstrate that the structured
+// format applies across rule-based subjects, not just algebra.
+---
+<div class="faux-explain">
+  <div class="meta-row">
+    <span class="meta">Explain</span>
+    <span class="close">Close</span>
+  </div>
+  <div class="body">
+    <div class="rule">Rule: balance atoms one element at a time, starting with the most complex molecule. Adjust coefficients, never subscripts.</div>
+    <div class="why">A chemical reaction conserves atoms &mdash; the same count of each element must appear on both sides of the arrow. Changing a subscript would change the molecule itself.</div>
+    <div class="label-tag">Example:</div>
+    <pre class="pre-block">CH₄ + O₂ → CO₂ + H₂O           (start, not yet balanced)
+CH₄ + O₂ → CO₂ + 2H₂O          (balance H — 4 on each side)
+CH₄ + 2O₂ → CO₂ + 2H₂O         (balance O — 4 on each side)</pre>
+    <div class="label-tag">Watch out:</div>
+    <div class="watchout">Changing CH₄ to CH₂ would &ldquo;balance&rdquo; the equation arithmetically, but it&rsquo;s now a different molecule. Coefficients only.</div>
+  </div>
+</div>
+
+<style>
+  .faux-explain {
+    width: 100%;
+    max-width: 440px;
+    padding: 16px 18px;
+    background: rgba(22, 24, 30, 0.96);
+    border: 1px solid rgba(170, 150, 230, 0.45);
+    border-radius: 14px;
+    color: rgba(255, 255, 255, 0.94);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter Variable', Inter, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45), 0 0 28px 4px rgba(170, 150, 230, 0.18);
+  }
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .meta {
+    font-size: 10px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: rgba(170, 150, 230, 0.95);
+    font-weight: 700;
+  }
+  .close {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.55);
+    padding: 3px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 6px;
+  }
+  .rule {
+    color: rgba(255, 255, 255, 0.97);
+    margin-bottom: 8px;
+  }
+  .why {
+    color: rgba(255, 255, 255, 0.78);
+    margin-bottom: 4px;
+  }
+  .label-tag {
+    color: rgba(170, 200, 250, 0.85);
+    font-weight: 600;
+    margin: 8px 0 4px;
+    font-size: 12px;
+  }
+  .pre-block {
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px;
+    background: rgba(255, 216, 77, 0.05);
+    border-radius: 4px;
+    padding: 8px 10px;
+    color: #ffe9a8;
+    margin: 4px 0 8px;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .watchout {
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 12.5px;
+  }
+</style>

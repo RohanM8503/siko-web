@@ -1,0 +1,313 @@
+---
+// Faked "homework page" backdrop. Renders a clean macOS-style window
+// with a math problem inside on a paper-cream surface. The example used
+// here is the canonical case from the codebase (lib/prompts.js worked
+// examples and test/scenarios/walkthrough_math.js): student wrote
+// 5x − 4 + 1 instead of 5x − 10 + 1 — a distribution slip.
+//
+// Marks (yellow bbox + label) and probe overlays (dashed tap targets)
+// are rendered INSIDE the .line span — that span is inline-block, so
+// it has the natural width of the rendered text. Absolute children of
+// the .line trace the text geometry exactly, regardless of viewport.
+// This also means the real product's prompt rule (never mark the
+// original problem statement) is structurally enforced — only student
+// lines get the data-line attribute.
+type Line = 0 | 1 | 2 | 3;
+
+interface Props {
+  /** "default" shows the wrong work; "blank" shows just the problem. */
+  mode?: 'default' | 'blank';
+  /** Compact mode shrinks padding/type for use in card thumbnails. */
+  compact?: boolean;
+  /** Render the yellow bbox + caption over a specific student line.
+   *  0 = the wrong-distribution line; 1-3 = subsequent (dimmed) lines.
+   *  null = no mark. */
+  markLine?: Line | null;
+  /** Render the Socratic probe — dashed tap targets around every
+   *  student line. */
+  showProbeTargets?: boolean;
+  /** When showProbeTargets is true, optionally mark one line as
+   *  "tapped" (solid yellow). */
+  probeTappedIndex?: Line | -1;
+  /** Caption text for the mark. Defaults to the actual content of the
+   *  marked line wrapped with "(look here)" as in overlay's bbox_label. */
+  markLabel?: string;
+  class?: string;
+}
+
+const {
+  mode = 'default',
+  compact = false,
+  markLine = null,
+  showProbeTargets = false,
+  probeTappedIndex = -1,
+  markLabel,
+  class: className = '',
+} = Astro.props;
+
+const STUDENT_LINES = [
+  { text: '5x − 4 + 1 = 3x + 7', dim: false },
+  { text: '5x − 3 = 3x + 7', dim: true },
+  { text: '2x = 10', dim: true },
+  { text: 'x = 5', dim: true },
+] as const;
+
+const defaultLabel =
+  markLine !== null ? `${STUDENT_LINES[markLine].text} (look here)` : '';
+const labelText = markLabel ?? defaultLabel;
+---
+
+<div class:list={['homework-window', className, compact ? 'is-compact' : '']}>
+  {/* macOS-style window chrome */}
+  <div class="chrome">
+    <div class="lights">
+      <span class="light red"></span>
+      <span class="light yellow"></span>
+      <span class="light green"></span>
+    </div>
+    <div class="title">algebra-1 — practice set 3</div>
+    <div class="spacer"></div>
+  </div>
+
+  {/* Paper interior */}
+  <div class="paper">
+    <div class="prompt">
+      <span class="prompt-num">3.</span>
+      Solve for <em>x</em>:
+    </div>
+    <div class="problem">5(x &minus; 2) + 1 = 3x + 7</div>
+
+    {mode === 'default' && (
+      <div class="student-block">
+        {STUDENT_LINES.map((ln, i) => (
+          <div
+            class:list={['student', ln.dim && 'dim', markLine === i && 'is-marked']}
+            data-line={i}
+          >
+            <span class="line">
+              {/* Overlays live INSIDE .line so absolute positioning is
+                  relative to the rendered text width, not the parent
+                  block. Rendered BEFORE the text node and given z-index:1
+                  so the text (z-index:2) reads on top. */}
+              {markLine === i && (
+                <span class="mark" aria-hidden="true"></span>
+              )}
+              {showProbeTargets && (
+                <span
+                  class:list={['probe-target', probeTappedIndex === i && 'tapped']}
+                  aria-hidden="true"
+                />
+              )}
+              <span class="line-text">{ln.text}</span>
+            </span>
+            {/* The label tag sits above the .line — it's anchored to
+                .student so vertical positioning is stable even if the
+                tag wraps. */}
+            {markLine === i && labelText && (
+              <div class="mark-label">{labelText}</div>
+            )}
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  .homework-window {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #FBFAF5;
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    box-shadow:
+      0 30px 60px -20px rgba(20, 18, 12, 0.18),
+      0 12px 24px -10px rgba(20, 18, 12, 0.10);
+  }
+  .chrome {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 34px;
+    padding: 0 14px;
+    background: linear-gradient(180deg, #ECE7DC 0%, #E0DACA 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    font-family: 'Inter Variable', Inter, system-ui, sans-serif;
+    font-size: 12px;
+    color: #5A5448;
+    letter-spacing: 0.01em;
+  }
+  .lights { display: flex; gap: 6px; }
+  .light {
+    width: 11px; height: 11px; border-radius: 50%;
+    box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.12);
+  }
+  .red    { background: #FE5F58; }
+  .yellow { background: #FFBC2E; }
+  .green  { background: #28C941; }
+  .title  { flex: 1; text-align: center; font-weight: 500; }
+  .spacer { width: 49px; }
+
+  .paper {
+    padding: 38px 56px 44px;
+    font-family: 'Fraunces Variable', Fraunces, ui-serif, Georgia, serif;
+    font-variation-settings: 'opsz' 14;
+    color: #1F1B12;
+  }
+  .is-compact .paper {
+    padding: 22px 28px 26px;
+    font-size: 14px;
+  }
+
+  .prompt {
+    font-size: 16px;
+    color: #3A3528;
+    margin-bottom: 16px;
+  }
+  .prompt-num {
+    display: inline-block;
+    margin-right: 8px;
+    font-weight: 600;
+    color: #1F1B12;
+  }
+  .prompt em {
+    font-style: italic;
+    color: #1F1B12;
+  }
+
+  .problem {
+    font-size: 22px;
+    line-height: 1.5;
+    color: #1F1B12;
+    margin-bottom: 22px;
+    letter-spacing: 0.005em;
+  }
+  .is-compact .problem {
+    font-size: 17px;
+    margin-bottom: 14px;
+  }
+
+  .student-block {
+    /* Plain block so each .student stacks naturally with line-height. */
+  }
+  .student {
+    position: relative;
+    font-size: 20px;
+    line-height: 1.7;
+    color: #2B2618;
+    font-variation-settings: 'opsz' 18, 'SOFT' 80;
+  }
+  .student.dim {
+    color: rgba(43, 38, 24, 0.42);
+  }
+  .is-compact .student {
+    font-size: 15px;
+  }
+  /* .line is the inline-block reference — it has the natural width of
+     the rendered text, so absolutely-positioned children hug it. The
+     z-index:0 creates a stacking context so children with z-index 1/2
+     stack predictably *within* the line. */
+  .student .line {
+    position: relative;
+    display: inline-block;
+    z-index: 0;
+  }
+  .student .line-text {
+    position: relative;
+    z-index: 2;
+  }
+  /* The marked line stays at full ink even when other lines are dimmed. */
+  .student.is-marked .line-text {
+    color: #1F1B12;
+  }
+
+  /* Yellow bbox — extends slightly beyond the text via negative inset.
+     z-index:1 sits behind the text node (z-index:2) so the characters
+     read clearly through the 10% yellow fill. */
+  .mark {
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    left: -10px;
+    right: -10px;
+    border: 1.5px solid rgba(255, 216, 77, 0.65);
+    border-radius: 10px;
+    background: rgba(255, 216, 77, 0.10);
+    box-shadow:
+      0 0 8px rgba(255, 216, 77, 0.55),
+      0 0 28px rgba(255, 216, 77, 0.32),
+      inset 0 0 0 1px rgba(255, 216, 77, 0.18);
+    animation: markPulse 2.4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Caption tag above the bbox. Anchored to .student (the .line's
+     positioned ancestor) and aligned to the bbox's left edge by
+     mirroring the -10px offset. Top is set well above the bbox top
+     (which sits at y=-4 of .student) so the label has clear daylight
+     between it and the box, matching overlay.html's .label spacing. */
+  .mark-label {
+    position: absolute;
+    left: -10px;
+    top: -32px;
+    padding: 3px 9px;
+    background: #FFD84D;
+    color: #1A1500;
+    font-family: 'Inter Variable', Inter, system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(20, 18, 12, 0.30);
+    white-space: nowrap;
+    z-index: 4;
+  }
+
+  @keyframes markPulse {
+    0%, 100% {
+      box-shadow:
+        0 0 8px rgba(255, 216, 77, 0.55),
+        0 0 28px rgba(255, 216, 77, 0.32),
+        inset 0 0 0 1px rgba(255, 216, 77, 0.18);
+    }
+    50% {
+      box-shadow:
+        0 0 14px rgba(255, 216, 77, 0.80),
+        0 0 42px rgba(255, 216, 77, 0.48),
+        inset 0 0 0 1px rgba(255, 216, 77, 0.28);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mark { animation: none; }
+  }
+
+  /* Probe dashed tap-targets — one per line, sized to sit INSIDE the
+     line box with a small breathing margin so adjacent targets don't
+     overlap (which would look like one continuous shape rather than
+     separate tappable targets). The bbox/mark above uses a more
+     generous inset because it's always solo; probe targets are stacked. */
+  .probe-target {
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    left: -10px;
+    right: -10px;
+    border: 1.2px dashed rgba(255, 216, 77, 0.55);
+    background: rgba(255, 216, 77, 0.06);
+    border-radius: 7px;
+    pointer-events: none;
+    z-index: 1;
+    animation: probeAppear 240ms cubic-bezier(.2,.8,.2,1);
+  }
+  .probe-target.tapped {
+    background: rgba(255, 216, 77, 0.18);
+    border: 2px solid rgba(255, 216, 77, 0.95);
+    border-style: solid;
+    box-shadow: 0 0 14px rgba(255, 216, 77, 0.55);
+  }
+  @keyframes probeAppear {
+    from { opacity: 0; transform: translateY(-2px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>

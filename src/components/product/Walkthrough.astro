@@ -1,0 +1,157 @@
+---
+// Siko's "Try one with me" Socratic walkthrough card. The kid is given
+// a parallel practice problem (different numbers, same skill) and walks
+// through it turn by turn — Siko never writes the next step.
+//
+// Mirrors overlay.html #walkthrough-card: problem block at top, scrollable
+// dialogue (student bubbles on right, tutor on left, gold-tinted), input
+// row at the bottom. Wrong validations get a warm-orange tint
+// (wt-validation-wrong) so the redirect reads as "look again," not
+// "you're scolded."
+//
+// Scene: a non-trivial kinematics problem with a non-zero initial
+// velocity. The natural student mistake is reaching for d = ½at² (the
+// "from rest" formula) when the object is moving. Siko catches this
+// with one Socratic redirect — never writing the right formula, only
+// asking a question that surfaces the error in the student's premise.
+---
+
+<div class="walkthrough-card">
+  <div class="header">
+    <span class="meta">Let&rsquo;s try one together</span>
+    <button type="button" class="close" aria-label="Close">Close</button>
+  </div>
+  <div class="problem">A car traveling at 18&nbsp;m/s brakes uniformly to a stop in 4.5&nbsp;seconds. How far does it travel while braking?</div>
+
+  <div class="dialogue">
+    <div class="bubble tutor">What formula do you need?</div>
+    <div class="bubble student">d = ½at²</div>
+    <div class="bubble tutor wt-wrong">Hold on &mdash; that one assumes the car starts from rest. Is it?</div>
+    <div class="bubble student">no, it&rsquo;s already at 18 m/s</div>
+    <div class="bubble tutor">Right. Which formula handles a non-zero starting speed?</div>
+    <div class="bubble student">d = ut + ½at²</div>
+    <div class="bubble tutor">Yes. So what value of <em>a</em> do we use here?</div>
+  </div>
+
+  <div class="input-row">
+    <div class="textarea" aria-hidden="true">a = ?</div>
+    <button type="button" class="send">Send</button>
+  </div>
+</div>
+
+<style>
+  .walkthrough-card {
+    width: 100%;
+    max-width: 480px;
+    padding: 14px 16px;
+    background: rgba(22, 24, 30, 0.96);
+    border: 1px solid rgba(255, 216, 77, 0.50);
+    border-radius: 14px;
+    color: rgba(255, 255, 255, 0.94);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter Variable', Inter, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    box-shadow:
+      0 14px 40px rgba(0, 0, 0, 0.55),
+      0 0 28px 4px rgba(255, 216, 77, 0.14),
+      inset 0 0 0 1px rgba(255, 216, 77, 0.10);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .header { display: flex; justify-content: space-between; align-items: center; }
+  .meta {
+    font-size: 10px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: rgba(255, 216, 77, 0.95);
+    font-weight: 700;
+  }
+  .close {
+    font: inherit;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.78);
+    cursor: pointer;
+  }
+  .problem {
+    padding: 9px 12px;
+    font-size: 14.5px;
+    font-weight: 500;
+    line-height: 1.45;
+    color: rgba(255, 246, 215, 0.98);
+    background: rgba(255, 216, 77, 0.07);
+    border: 1px solid rgba(255, 216, 77, 0.22);
+    border-radius: 9px;
+  }
+  .dialogue {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 4px 2px;
+    max-height: 250px;
+    overflow-y: auto;
+  }
+  .bubble {
+    max-width: 80%;
+    padding: 6px 10px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  .bubble em {
+    font-style: italic;
+    color: rgba(255, 246, 215, 0.97);
+  }
+  .bubble.tutor {
+    align-self: flex-start;
+    background: rgba(255, 216, 77, 0.12);
+    border: 1px solid rgba(255, 216, 77, 0.32);
+    color: rgba(255, 246, 215, 0.97);
+    border-bottom-left-radius: 4px;
+  }
+  .bubble.tutor.wt-wrong {
+    background: rgba(244, 162, 89, 0.14);
+    border-color: rgba(244, 162, 89, 0.42);
+    color: rgba(255, 226, 195, 0.97);
+  }
+  .bubble.student {
+    align-self: flex-end;
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.96);
+    border-bottom-right-radius: 4px;
+  }
+  .input-row {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .textarea {
+    flex: 1;
+    min-height: 40px;
+    padding: 8px 10px;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.55);
+    background: rgba(0, 0, 0, 0.30);
+    border: 1px solid rgba(255, 216, 77, 0.30);
+    border-radius: 8px;
+  }
+  .send {
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 7px;
+    border: 1px solid rgba(255, 216, 77, 0.55);
+    background: rgba(255, 216, 77, 0.20);
+    color: rgba(255, 245, 220, 0.97);
+    cursor: pointer;
+  }
+</style>

@@ -1,0 +1,140 @@
+---
+// "Works anywhere" strip — proof that Siko sits on top of any surface.
+// Kept deliberately compact: it's a supporting claim, not a product
+// demo. The hero, method, features, probe, and dashboard sections
+// carry the real visual weight; this strip just punctuates between
+// them.
+//
+// Icons are generic file-type glyphs (see AppIcon.astro), not brand
+// logos — they read as "this kind of surface" rather than "we integrate
+// with X."
+import AppIcon from './AppIcon.astro';
+
+type IconKind = 'doc' | 'pdf' | 'notebook' | 'web' | 'math' | 'book';
+
+interface App {
+  name: string;
+  icon: IconKind;
+}
+
+// 12 apps in 2 rows on desktop. Trimmed from the longer list — variety
+// over exhaustiveness; the caption ("...or anywhere else") carries the
+// rest of the claim.
+const APPS: App[] = [
+  { name: 'Pages',          icon: 'doc' },
+  { name: 'Microsoft Word', icon: 'doc' },
+  { name: 'Google Docs',    icon: 'doc' },
+  { name: 'Notion',         icon: 'doc' },
+  { name: 'PDF in Preview', icon: 'pdf' },
+  { name: 'Notability',     icon: 'notebook' },
+  { name: 'GoodNotes',      icon: 'notebook' },
+  { name: 'Khan Academy',   icon: 'web' },
+  { name: 'IXL',            icon: 'web' },
+  { name: 'Safari',         icon: 'web' },
+  { name: 'Chrome',         icon: 'web' },
+  { name: 'Desmos',         icon: 'math' },
+];
+---
+
+<section class="section py-10 md:py-12 border-y border-ink-100/70 bg-cream-50/60">
+  <div class="container-page">
+    <p class="text-center font-serif text-[18px] md:text-[20px] text-ink-800 leading-snug max-w-[58ch] mx-auto mb-7 md:mb-8" style="font-variation-settings: 'opsz' 14;">
+      Siko works on top of <span class="accent-italic">anything</span>
+      with text or equations.
+    </p>
+
+    <ul class="apps-grid" aria-label="Apps Siko works on top of">
+      {APPS.map((app) => (
+        <li class="app-pill" data-icon={app.icon}>
+          <span class="icon-wrap" aria-hidden="true">
+            <AppIcon name={app.icon} size={14} />
+          </span>
+          <span class="app-name">{app.name}</span>
+        </li>
+      ))}
+    </ul>
+
+    <p class="mt-5 text-center font-mono text-[11px] text-ink-500">
+      + anywhere else with a passage of writing or a problem on screen.
+    </p>
+  </div>
+</section>
+
+<style>
+  .apps-grid {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 920px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+  @media (min-width: 640px) {
+    .apps-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+    }
+  }
+  @media (min-width: 768px) {
+    .apps-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 7px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .apps-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 7px;
+    }
+  }
+
+  .app-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    background: rgba(255, 255, 255, 0.45);
+    border: 1px solid theme('colors.ink.100');
+    border-radius: 8px;
+    transition:
+      background 160ms ease,
+      border-color 160ms ease,
+      transform 220ms cubic-bezier(.2,.8,.2,1);
+  }
+  .app-pill:hover {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: theme('colors.gold.200');
+    transform: translateY(-1px);
+  }
+
+  .icon-wrap {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid theme('colors.ink.100');
+  }
+
+  /* Per-category icon tint — same palette as before, just smaller. */
+  .app-pill[data-icon='doc']      .icon-wrap { color: theme('colors.ink.500'); }
+  .app-pill[data-icon='pdf']      .icon-wrap { color: theme('colors.terra'); }
+  .app-pill[data-icon='notebook'] .icon-wrap { color: theme('colors.sage'); }
+  .app-pill[data-icon='web']      .icon-wrap { color: theme('colors.dusty'); }
+  .app-pill[data-icon='math']     .icon-wrap { color: theme('colors.gold.400'); }
+  .app-pill[data-icon='book']     .icon-wrap { color: theme('colors.ink.500'); }
+
+  .app-name {
+    font-family: 'JetBrains Mono Variable', JetBrains Mono, ui-monospace, monospace;
+    font-size: 11.5px;
+    color: theme('colors.ink.800');
+    letter-spacing: 0.005em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>

@@ -1,0 +1,79 @@
+---
+// Privacy section, mono-treated like a spec sheet. Wording matches what
+// the onboarding screen says: "Screenshots are sent to Claude (Anthropic)
+// for analysis. They're not stored on Siko servers — only locally on
+// this Mac." Plus details about the 64×40 thumbnail digest used for
+// activity detection (which can't be read by anyone, including us).
+---
+
+<section id="privacy" class="section section-y">
+  <div class="container-page">
+    <div class="max-w-prose-wide">
+      <p class="eyebrow">Privacy &amp; trust</p>
+      <h2 class="mt-4 font-serif text-display-2 text-ink-900">
+        Built for anyone who cares about this stuff.
+      </h2>
+      <p class="mt-5 text-ink-600 text-[16.5px] leading-[1.65] max-w-[60ch]">
+        Siko requires macOS Screen Recording permission. We use it to
+        capture one frame at a time, only when you ask for help. Tiny
+        64&times;40 pixel thumbnails handle activity detection &mdash; they&rsquo;re
+        too small to read, by us or anyone.
+      </p>
+    </div>
+
+    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-px bg-ink-100 border border-ink-100 rounded-2xl overflow-hidden">
+      <div class="bg-cream-50 p-7 md:p-8">
+        <div class="font-mono text-[11px] uppercase tracking-eyebrow text-sage mb-4">
+          ✓ Local
+        </div>
+        <h3 class="font-serif text-[19px] text-ink-900 mb-4">Stays on the Mac</h3>
+        <ul class="space-y-2.5 font-mono text-[12.5px] text-ink-700 leading-relaxed">
+          <li>Session history</li>
+          <li>The per-session reports</li>
+          <li>Cross-session signals (recurring concepts, breakthroughs)</li>
+          <li>Parent email setting</li>
+          <li>Hint outcomes &amp; preferences</li>
+        </ul>
+        <p class="mt-5 text-[12px] text-ink-500 leading-relaxed">
+          Located in <span class="font-mono">~/Library/Application&nbsp;Support/Siko/</span>.
+          Patterns are computed on your Mac before any LLM call.
+        </p>
+      </div>
+
+      <div class="bg-cream-50 p-7 md:p-8">
+        <div class="font-mono text-[11px] uppercase tracking-eyebrow text-dusty mb-4">
+          → Sent to Claude (Anthropic)
+        </div>
+        <h3 class="font-serif text-[19px] text-ink-900 mb-4">Only when asked</h3>
+        <ul class="space-y-2.5 font-mono text-[12.5px] text-ink-700 leading-relaxed">
+          <li>The current screenshot</li>
+          <li>The diagnosis text</li>
+          <li>Typed input during a walk-through</li>
+          <li>Per-session summaries when you generate a Patterns synthesis</li>
+        </ul>
+        <p class="mt-5 text-[12px] text-ink-500 leading-relaxed">
+          Sent to Anthropic only when you press <kbd class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-ink-100 border border-ink-100">⌘⇧Space</kbd> or
+          tap a Siko action. Subject to Anthropic&rsquo;s data retention policy.
+        </p>
+      </div>
+
+      <div class="bg-cream-50 p-7 md:p-8">
+        <div class="font-mono text-[11px] uppercase tracking-eyebrow text-terra mb-4">
+          ✗ Never
+        </div>
+        <h3 class="font-serif text-[19px] text-ink-900 mb-4">We don&rsquo;t do this</h3>
+        <ul class="space-y-2.5 font-mono text-[12.5px] text-ink-700 leading-relaxed">
+          <li>Store screenshots on our servers</li>
+          <li>Pool data from different users on any server</li>
+          <li>Sell or share data</li>
+          <li>Train a model on your work</li>
+          <li>Build a learner-profile dossier</li>
+        </ul>
+        <p class="mt-5 text-[12px] text-ink-500 leading-relaxed">
+          The Patterns dashboard runs entirely on your Mac.
+          Nothing about it leaves your machine &mdash; not even to us.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

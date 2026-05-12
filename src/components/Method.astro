@@ -1,0 +1,137 @@
+---
+import HintCard from './product/HintCard.astro';
+import Walkthrough from './product/Walkthrough.astro';
+
+// Hint copy taken from the L1 / L2 / L3 pattern in lib/prompts.js,
+// instantiated for the canonical distribution-error scenario.
+const HINTS = [
+  {
+    tag: 'L1 · nudge',
+    cardLevel: 1 as const,
+    hint:
+      "Take another look at the second term on your first line — what does 5 multiply across?",
+    blurb:
+      "Siko points at the wrong step with a question — never a statement.",
+  },
+  {
+    tag: 'L2 · concept',
+    cardLevel: 2 as const,
+    hint:
+      "This is a distribution problem — the 5 has to multiply both x and −2. What does that give you?",
+    blurb:
+      "If the student presses ⌘⇧Space again, Siko names the concept. Still no answer.",
+    chip: { kind: 'close' as const, text: "You're looking in the right place." },
+  },
+  {
+    tag: 'L3 · step',
+    cardLevel: 3 as const,
+    hint:
+      "Try writing 5 × x and 5 × −2 separately, then combine. What do you get?",
+    blurb:
+      "Pressed once more, Siko suggests a concrete next move — still pointing them at the work, not doing it.",
+  },
+];
+---
+
+<section id="method" class="section section-y bg-cream-200/60">
+  <div class="container-page">
+    <div class="max-w-prose-wide">
+      <p class="eyebrow">The Method</p>
+      <h2 class="mt-4 font-serif text-display-2 text-ink-900">
+        Siko refuses to give answers.<br />
+        Here&rsquo;s what it does <span class="accent-italic">instead</span>.
+      </h2>
+      <p class="mt-5 text-ink-600 text-[16.5px] leading-[1.65] max-w-[60ch]">
+        Three escalating Socratic hints. Then a walk&#8209;through. The answer is
+        the last thing on offer, not the first. This is the pedagogical
+        spine of the product — and the part that makes Siko different from every
+        other homework-help app out there.
+      </p>
+    </div>
+
+    {/* The L1 / L2 / L3 ladder */}
+    <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+      {HINTS.map((h) => (
+        <div class="card-cream p-6 md:p-7">
+          <div class="flex items-center gap-2 mb-5">
+            <span class="font-mono text-[11px] uppercase tracking-eyebrow text-gold-400">
+              {h.tag}
+            </span>
+          </div>
+          <p class="text-ink-700 text-[14.5px] leading-[1.55] mb-6">{h.blurb}</p>
+          <div class="rounded-xl overflow-hidden surface-dark p-1.5">
+            <HintCard
+              level={h.cardLevel}
+              subject="math"
+              hint={h.hint}
+              chip={(h as any).chip ?? null}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {/* The Try-one-with-me beat */}
+    <div class="mt-20 md:mt-28">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+        <div class="lg:col-span-5">
+          <span class="font-mono text-[11px] uppercase tracking-eyebrow text-gold-400">
+            After L3 · Try one with me
+          </span>
+          <h3 class="mt-3 font-serif text-display-3 text-ink-900">
+            A Socratic walk-through on a parallel problem.
+          </h3>
+          <p class="mt-4 text-ink-600 text-[15.5px] leading-[1.65]">
+            If three escalating hints didn&rsquo;t crack it, Siko offers a different
+            problem &mdash; same underlying skill, different surface. The student above was
+            stuck on distribution; here&rsquo;s the same student being walked through a
+            kinematics problem they didn&rsquo;t know how to start. Siko never writes
+            the next step. It only asks, confirms, or redirects.
+          </p>
+          <ul class="mt-6 space-y-3 text-[14px] text-ink-700">
+            <li class="flex gap-3">
+              <span class="font-mono text-gold-400">&rarr;</span>
+              <span><strong class="font-medium text-ink-900">Verifies the work.</strong> Computes what the right next step would be before judging the answer &mdash; whether that&rsquo;s an equation, a formula, or a thesis sentence.</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="font-mono text-gold-400">&rarr;</span>
+              <span><strong class="font-medium text-ink-900">Charitable on slips.</strong> An arithmetic mistake gets pointed back at the arithmetic. A wrong formula choice gets one Socratic redirect &mdash; never the right formula handed over.</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="font-mono text-gold-400">&rarr;</span>
+              <span><strong class="font-medium text-ink-900">Teaches when stuck.</strong> If the student says &ldquo;idk&rdquo; twice, Siko names the prerequisite rule and asks them to apply it.</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="font-mono text-gold-400">&rarr;</span>
+              <span><strong class="font-medium text-ink-900">Exits gracefully.</strong> If the gap is too wide, Siko says so and saves the spot for later &mdash; instead of grinding on.</span>
+            </li>
+          </ul>
+        </div>
+        <div class="lg:col-span-7">
+          <div class="rounded-2xl surface-dark p-2">
+            <Walkthrough />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* The brand statement — about NOT giving in even after the hints
+        run out. Written in plain user-facing language; no internal UI
+        vocabulary ("L3 card", "primary button") which read as engineering
+        notes rather than a brand posture. */}
+    <div class="mt-20 md:mt-28 max-w-prose-wide mx-auto">
+      <div class="rounded-2xl border border-gold-200 bg-gold-50/60 p-8 md:p-10">
+        <p class="font-mono text-[11px] uppercase tracking-eyebrow text-gold-500 mb-4">
+          A small detail that matters
+        </p>
+        <p class="text-ink-900 text-[18px] md:text-[20px] leading-[1.55] font-serif" style="font-variation-settings: 'opsz' 14;">
+          Even when the hints run out, Siko <span class="accent-italic">still</span>
+          doesn&rsquo;t offer the answer. The next thing on the table is a similar
+          problem to walk through together &mdash; step by step, asking instead of
+          telling. The student can ask to just see the answer if they really want,
+          but the option is quiet on purpose. Most don&rsquo;t take it.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

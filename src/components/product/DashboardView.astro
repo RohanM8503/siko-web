@@ -1,0 +1,410 @@
+---
+// Mock of Siko's cross-session Patterns dashboard. The actual product
+// surface (dashboard.html + dashboard.js + lib/dashboard-signals.js +
+// lib/synthesis-cache.js) is a separate macOS window: list of past
+// sessions on the left, detail / synthesis on the right, suggestion
+// chips along the top.
+//
+// For the landing page we render a single composition: a "synthesis"
+// view triggered by clicking the ★ Breakthrough chip. We drop the
+// list-pane (its content is just dates + headlines; less useful than
+// the synthesis itself for showing the dashboard's value) and let the
+// chip row + synthesis content carry the picture.
+//
+// All content here is grounded in the shape that lib/dashboard-signals.js
+// produces — subject mix percentages, recurring concept clusters (≥2
+// sessions), breakthroughs (unresolved → resolved across the arc),
+// trend arrays. The synthesis copy mirrors the
+// CROSS_SESSION_SYNTHESIS_PROMPT_TEMPLATE output schema (headline,
+// arc, recurring_sticking_points, mastery_momentum, recommended_focus,
+// tone_for_parent).
+---
+
+<div class="dash-window">
+  <div class="chrome">
+    <div class="lights">
+      <span class="light red"></span>
+      <span class="light yellow"></span>
+      <span class="light green"></span>
+    </div>
+    <div class="title">Siko &mdash; Patterns</div>
+    <div class="spacer"></div>
+  </div>
+
+  <header class="dash-header">
+    <h2>Past study sessions</h2>
+    <div class="subtitle">12 sessions over the last 3 weeks &middot; 5h 12m total</div>
+  </header>
+
+  <div class="chip-row">
+    <span class="chip-label">Suggested</span>
+    <button class="chip selected" data-kind="breakthrough" type="button">
+      <span class="chip-icon">★</span> Breakthrough: distribution
+    </button>
+    <button class="chip" data-kind="recurring" type="button">
+      <span class="chip-icon">↻</span> Distributing negatives &middot; 3 sessions
+    </button>
+    <button class="chip" data-kind="sprint" type="button">
+      <span class="chip-icon">⤳</span> Math sprint &middot; 5 sessions
+    </button>
+    <button class="chip" data-kind="window" type="button">
+      <span class="chip-icon">◷</span> Last 7 days
+    </button>
+  </div>
+
+  <div class="detail">
+    <div class="synth-head">
+      <div class="synth-headline">
+        You worked the distributive property across 3 sessions &mdash; and
+        started catching the negative-sign mistake before asking for help.
+      </div>
+      <div class="synth-meta-row">
+        <span class="synth-meta">3 sessions &middot; 84 minutes &middot; math + history</span>
+        <span class="tone-pill celebrate">celebrate</span>
+      </div>
+      <div class="cache-row">
+        <span class="cache-tag">Saved</span>
+        <span>Updated 2 hours ago</span>
+        <button class="regenerate" type="button">↻ Regenerate</button>
+      </div>
+    </div>
+
+    <p class="synth-arc">
+      Three of your last five sessions touched distribution. In the first you
+      needed all three hint levels plus a walk-through; in the third you
+      spotted the sign error before pressing <span class="kbd">⌘⇧Space</span>.
+      Resolve rate climbed from 33% to 67% to 80%.
+    </p>
+
+    <section class="dash-section">
+      <h3>Subject mix</h3>
+      <div class="signal-bar" role="img" aria-label="65% math, 25% English, 10% science">
+        <span class="bar-seg" style="width: 65%; background: #F59E6B;"></span>
+        <span class="bar-seg" style="width: 25%; background: #9AA6F5;"></span>
+        <span class="bar-seg" style="width: 10%; background: #6BD6C9;"></span>
+      </div>
+      <div class="signal-bar-legend">
+        <span><span class="legend-dot" style="background: #F59E6B;"></span>Math 65%</span>
+        <span><span class="legend-dot" style="background: #9AA6F5;"></span>English 25%</span>
+        <span><span class="legend-dot" style="background: #6BD6C9;"></span>Science 10%</span>
+      </div>
+    </section>
+
+    <section class="dash-section">
+      <h3>Resolve rate across the arc</h3>
+      <div class="trend-row">
+        <span class="trend-arrow up">↗</span>
+        <span class="trend-values">33% &nbsp;→&nbsp; 67% &nbsp;→&nbsp; 80%</span>
+      </div>
+    </section>
+
+    <section class="dash-section">
+      <h3>Recurring sticking point</h3>
+      <div class="synth-card recurring">
+        <div class="sc-title">Distributing negative terms</div>
+        <div class="sc-line">
+          <div class="sc-label">Observation</div>
+          <div class="sc-value">You&rsquo;ve slipped on the &minus;2 in 5(x&minus;2), the &minus;3 in 4(y&minus;3), and the &minus;5 in 3(z&minus;5).</div>
+        </div>
+        <div class="sc-line">
+          <div class="sc-label">Try next</div>
+          <div class="sc-value">Before each algebra step, rewrite 3(x &minus; 4) as 3·x + 3·(&minus;4) before simplifying &mdash; that catches the negative.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dash-section">
+      <h3>Mastery momentum</h3>
+      <div class="synth-card momentum">
+        <div class="sc-title">Combining like terms</div>
+        <div class="sc-line">
+          <div class="sc-label">Where it was</div>
+          <div class="sc-value">First session &mdash; needed an L2 hint on Apr 14 to even see what to combine.</div>
+        </div>
+        <div class="sc-line">
+          <div class="sc-label">Where it is</div>
+          <div class="sc-value">Now self-correcting without a hint. Last seen Apr 28.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="dash-section">
+      <h3>Recommended focus</h3>
+      <div class="focus-card">
+        Spend five minutes before each algebra session on negative-distribution warm-ups &mdash; one problem like 3(x &minus; 4), one like 4(y &minus; 7).
+      </div>
+    </section>
+  </div>
+</div>
+
+<style>
+  .dash-window {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #15161B;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 30px 60px -20px rgba(20, 18, 12, 0.30),
+      0 12px 24px -10px rgba(20, 18, 12, 0.18);
+    color: rgba(255, 255, 255, 0.94);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter Variable', Inter, sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+    letter-spacing: 0.01em;
+  }
+  .chrome {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 32px;
+    padding: 0 14px;
+    background: #1F2027;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.55);
+  }
+  .lights { display: flex; gap: 6px; }
+  .light {
+    width: 11px; height: 11px; border-radius: 50%;
+    box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.20);
+    opacity: 0.95;
+  }
+  .red    { background: #FE5F58; }
+  .yellow { background: #FFBC2E; }
+  .green  { background: #28C941; }
+  .title  { flex: 1; text-align: center; font-weight: 500; }
+  .spacer { width: 49px; }
+
+  .dash-header {
+    padding: 16px 22px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .dash-header h2 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.94);
+  }
+  .dash-header .subtitle {
+    margin-top: 2px;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 12px;
+  }
+
+  .chip-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    padding: 10px 22px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    overflow-x: auto;
+  }
+  .chip-row::-webkit-scrollbar { height: 0; }
+  .chip-label {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.38);
+    margin-right: 4px;
+    flex-shrink: 0;
+  }
+  .chip {
+    font: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 11px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.85);
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    letter-spacing: 0.005em;
+  }
+  .chip .chip-icon {
+    margin-right: 4px;
+    opacity: 0.75;
+  }
+  .chip.selected {
+    background: rgba(255, 216, 130, 0.14);
+    border-color: rgba(255, 216, 130, 0.50);
+    color: rgba(255, 216, 130, 0.96);
+  }
+
+  .detail {
+    padding: 18px 22px 22px;
+    max-height: 620px;
+    overflow-y: auto;
+  }
+  .detail::-webkit-scrollbar { width: 8px; }
+  .detail::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+  }
+
+  .synth-head { margin-bottom: 14px; }
+  .synth-headline {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 8px;
+  }
+  .synth-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .synth-meta {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 12px;
+  }
+  .tone-pill {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 5px;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .tone-pill.celebrate {
+    color: rgba(255, 216, 130, 0.95);
+    background: rgba(255, 216, 130, 0.10);
+  }
+
+  .cache-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.38);
+  }
+  .cache-tag {
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .regenerate {
+    font: inherit;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.55);
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 10.5px;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+  }
+
+  .synth-arc {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 14px 0 18px;
+  }
+  .kbd {
+    display: inline-block;
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 11px;
+    padding: 1px 5px;
+    margin: 0 1px;
+    border-radius: 3px;
+    background: rgba(255, 216, 77, 0.14);
+    border: 1px solid rgba(255, 216, 77, 0.32);
+    color: rgba(255, 240, 200, 0.9);
+  }
+
+  .dash-section { margin: 14px 0; }
+  .dash-section h3 {
+    margin: 0 0 8px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.38);
+  }
+
+  .signal-bar {
+    display: flex;
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .bar-seg { height: 100%; display: block; }
+  .signal-bar-legend {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+    font-size: 11.5px;
+    color: rgba(255, 255, 255, 0.55);
+  }
+  .legend-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  .trend-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+  }
+  .trend-arrow { font-size: 14px; }
+  .trend-arrow.up { color: rgba(140, 220, 160, 0.95); }
+  .trend-values {
+    color: rgba(255, 255, 255, 0.78);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+  }
+
+  .synth-card {
+    padding: 11px 13px;
+    margin-bottom: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+  }
+  .synth-card.recurring { border-left: 3px solid rgba(255, 180, 110, 0.60); }
+  .synth-card.momentum  { border-left: 3px solid rgba(140, 220, 160, 0.60); }
+  .sc-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.94);
+    margin-bottom: 6px;
+  }
+  .sc-line {
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: 4px;
+  }
+  .sc-label {
+    flex-shrink: 0;
+    width: 92px;
+    color: rgba(255, 255, 255, 0.38);
+  }
+  .sc-value { flex: 1 1 auto; color: rgba(255, 255, 255, 0.88); }
+
+  .focus-card {
+    padding: 12px 14px;
+    background: rgba(255, 216, 130, 0.06);
+    border: 1px solid rgba(255, 216, 130, 0.22);
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.55;
+    color: rgba(255, 246, 215, 0.96);
+  }
+</style>

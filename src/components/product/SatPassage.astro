@@ -1,0 +1,219 @@
+---
+// Mock of an SAT-style reading-comprehension page that the kid might
+// have open on their screen — a short passage with an underlined
+// sentence (per SAT formatting), followed by a four-option MCQ.
+//
+// Siko marks the UNDERLINED SENTENCE in the passage with its yellow
+// glow — NEVER one of the answer choices. Pointing at a choice would
+// effectively tell the kid "this one's wrong (or right)," which is
+// exactly what the product's prompt rules forbid. Marking the passage
+// cue says "the question is about this sentence — go think about it,"
+// which is properly Socratic.
+//
+// We also use inline highlighting (with box-decoration-break: clone so
+// it wraps cleanly across line breaks) rather than a rectangular bbox,
+// because the target is inline text inside flowing prose — same
+// convention the actual overlay uses for sub-token marks
+// (lib/prompts.js: "underline" mark_style for single-token targets,
+// no label since the underline is its own indicator).
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+
+const CHOICES: { letter: string; text: string }[] = [
+  { letter: 'A', text: 'It introduces a counterargument the author will rebut.' },
+  { letter: 'B', text: 'It marks a shift from describing a transition to characterizing its result.' },
+  { letter: 'C', text: 'It provides a specific example that supports the previous claim.' },
+  { letter: 'D', text: 'It questions the validity of an earlier assertion.' },
+];
+---
+
+<div class:list={['sat-window', className]}>
+  <div class="chrome">
+    <div class="lights">
+      <span class="light red"></span>
+      <span class="light yellow"></span>
+      <span class="light green"></span>
+    </div>
+    <div class="title">SAT Reading — Practice Test 4</div>
+    <div class="spacer"></div>
+  </div>
+
+  <div class="paper">
+    <div class="passage-num">Passage 2 of 4</div>
+
+    <p class="passage">
+      Although early adopters of the new technology faced steep learning
+      curves, by 2015 it had become so commonplace that businesses with
+      extensive paper-based systems began to seem antiquated.{' '}
+      <span class="underlined siko-mark">Indeed, what was once cutting-edge soon became simply expected.</span>
+    </p>
+
+    <div class="question">
+      <span class="q-num">12.</span>
+      Which choice best describes the function of the underlined sentence in the passage?
+    </div>
+
+    <ol class="choices">
+      {CHOICES.map((c) => (
+        <li class="choice" data-letter={c.letter}>
+          <span class="bullet" aria-hidden="true">○</span>
+          <span class="choice-text">
+            <span class="letter">{c.letter})</span> {c.text}
+          </span>
+        </li>
+      ))}
+    </ol>
+  </div>
+</div>
+
+<style>
+  .sat-window {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #FBFAF5;
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    box-shadow:
+      0 30px 60px -20px rgba(20, 18, 12, 0.18),
+      0 12px 24px -10px rgba(20, 18, 12, 0.10);
+    width: 100%;
+  }
+  .chrome {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 34px;
+    padding: 0 14px;
+    background: linear-gradient(180deg, #ECE7DC 0%, #E0DACA 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    font-family: 'Inter Variable', Inter, system-ui, sans-serif;
+    font-size: 12px;
+    color: #5A5448;
+    letter-spacing: 0.01em;
+  }
+  .lights { display: flex; gap: 6px; }
+  .light {
+    width: 11px; height: 11px; border-radius: 50%;
+    box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.12);
+  }
+  .red    { background: #FE5F58; }
+  .yellow { background: #FFBC2E; }
+  .green  { background: #28C941; }
+  .title  { flex: 1; text-align: center; font-weight: 500; }
+  .spacer { width: 49px; }
+
+  .paper {
+    padding: 28px 36px 32px;
+    font-family: 'Fraunces Variable', Fraunces, ui-serif, Georgia, serif;
+    font-variation-settings: 'opsz' 14;
+    color: #1F1B12;
+  }
+
+  .passage-num {
+    font-family: 'Inter Variable', Inter, sans-serif;
+    font-size: 10.5px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: #8B7A5A;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .passage {
+    font-size: 15px;
+    line-height: 1.65;
+    color: #2B2618;
+    margin: 0 0 18px;
+    max-width: 60ch;
+  }
+  /* SAT-style sentence underline (per the test's own formatting). */
+  .underlined {
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(43, 38, 24, 0.55);
+  }
+  /* Siko's mark on inline text — a soft yellow highlight that wraps
+     cleanly across line breaks via box-decoration-break: clone. This is
+     the inline equivalent of the .mark bbox used on full lines
+     elsewhere; same palette, same pulse cadence, just shaped for
+     inline-flow text. NO LABEL because the prompt forbids it from
+     becoming a giveaway — Siko is pointing at the SENTENCE, not at any
+     answer choice. The kid still has to figure out which choice
+     describes that sentence's function. */
+  .siko-mark {
+    background: rgba(255, 216, 77, 0.22);
+    border-radius: 5px;
+    padding: 2px 4px;
+    margin: 0 -2px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    box-shadow:
+      0 0 6px rgba(255, 216, 77, 0.55),
+      0 0 18px rgba(255, 216, 77, 0.32);
+    animation: sikoInlinePulse 2.4s ease-in-out infinite;
+  }
+  @keyframes sikoInlinePulse {
+    0%, 100% {
+      box-shadow:
+        0 0 6px rgba(255, 216, 77, 0.55),
+        0 0 18px rgba(255, 216, 77, 0.32);
+    }
+    50% {
+      box-shadow:
+        0 0 10px rgba(255, 216, 77, 0.80),
+        0 0 28px rgba(255, 216, 77, 0.48);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .siko-mark { animation: none; }
+  }
+
+  .question {
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: #1F1B12;
+    margin-bottom: 14px;
+    max-width: 64ch;
+    font-weight: 500;
+  }
+  .q-num {
+    display: inline-block;
+    margin-right: 8px;
+    font-weight: 700;
+  }
+
+  .choices {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .choice {
+    position: relative;
+    display: flex;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: #3A3528;
+  }
+  .choice .bullet {
+    width: 14px;
+    color: #8B7A5A;
+    font-size: 11px;
+    flex-shrink: 0;
+    padding-top: 3px;
+  }
+  .choice-text {
+    position: relative;
+  }
+  .choice .letter {
+    font-weight: 600;
+    color: #1F1B12;
+    margin-right: 4px;
+  }
+</style>

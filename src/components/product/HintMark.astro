@@ -1,0 +1,83 @@
+---
+// The yellow bbox + caption label that Siko paints over the student's
+// wrong step. Sized and positioned absolutely by the parent. Uses the
+// same fills/strokes as overlay.html's .mark-bbox + .label, including
+// the pulsing drop-shadow glow.
+interface Props {
+  /** Optional caption shown above the bbox — sanitized "look here" by default. */
+  label?: string;
+  /** Default `style` is left empty so the caller positions via inline style. */
+  style?: string;
+  class?: string;
+  /** When true, animate the glow on mount (used by hero on entry).
+   *  Always-on infinite pulse is the default. */
+  animated?: boolean;
+}
+const {
+  label = '5x − 4 + 1',
+  style = '',
+  class: className = '',
+  animated = true,
+} = Astro.props;
+---
+
+<div class:list={['hint-mark', className]} style={style} role="presentation">
+  {/* SVG-shaped bbox using a div with rounded corners + glow filters.
+      Cheaper than embedding an SVG and reads identically. */}
+  <div class:list={['box', animated && 'is-animated']}></div>
+  {label && <div class="label">{label}</div>}
+</div>
+
+<style>
+  .hint-mark {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .box {
+    position: absolute;
+    inset: 0;
+    border: 1.5px solid rgba(255, 216, 77, 0.65);
+    border-radius: 12px;
+    background: rgba(255, 216, 77, 0.10);
+    box-shadow:
+      0 0 8px rgba(255, 216, 77, 0.55),
+      0 0 28px rgba(255, 216, 77, 0.32),
+      inset 0 0 0 1px rgba(255, 216, 77, 0.18);
+  }
+  .box.is-animated {
+    animation: markPulse 2.4s ease-in-out infinite;
+  }
+  .label {
+    position: absolute;
+    left: 0;
+    top: -28px;
+    padding: 3px 9px;
+    background: #FFD84D;
+    color: #1A1500;
+    font-family: 'Inter Variable', Inter, system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    white-space: nowrap;
+  }
+  @keyframes markPulse {
+    0%, 100% {
+      box-shadow:
+        0 0 8px rgba(255, 216, 77, 0.55),
+        0 0 28px rgba(255, 216, 77, 0.32),
+        inset 0 0 0 1px rgba(255, 216, 77, 0.18);
+    }
+    50% {
+      box-shadow:
+        0 0 14px rgba(255, 216, 77, 0.80),
+        0 0 42px rgba(255, 216, 77, 0.48),
+        inset 0 0 0 1px rgba(255, 216, 77, 0.28);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .box.is-animated { animation: none; }
+  }
+</style>

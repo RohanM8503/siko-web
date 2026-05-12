@@ -1,0 +1,119 @@
+---
+// FAQ — built as native <details>/<summary> for zero JS, full keyboard
+// accessibility, and progressive enhancement.
+const FAQS = [
+  {
+    q: 'How is this different from Photomath, Khan Academy, or Chegg?',
+    a: [
+      "Photomath gives the answer. Chegg sells the answer. Khan Academy teaches you a curriculum on their platform.",
+      "Siko does none of these. It sits on top of whatever the student is already doing — their actual assignment, in their actual app — and asks Socratic questions until they figure it out themselves. It never gives the answer outright. When the student does ask to see it, they have to escalate through three hints first.",
+    ],
+  },
+  {
+    q: 'Will it create dependency?',
+    a: [
+      "Siko is designed against dependency. Three escalating hints. A Socratic probe between hints 1 and 2 that asks the student to re-read their own work before more help. A walk-through that makes them write the next step themselves. At L3, the primary action is to try a parallel problem — not to see the answer.",
+      "Every session ends with an honest report so progress is visible — to whoever's on the list, parent, tutor, or the student themselves. The Patterns dashboard makes the same answer visible over time — resolve rate climbing or flat, hint counts dropping or steady. If anyone is over-relying, the data shows it.",
+    ],
+  },
+  {
+    q: 'Can I see past sessions — and patterns over time?',
+    a: [
+      "Yes. Siko has a Patterns dashboard you open from the menu bar. It shows every past session in a list — click any one and you get the same report that gets emailed.",
+      "Across sessions, Siko auto-detects suggestion chips: recurring concepts (things the student keeps tripping on), breakthroughs (concepts that went from unresolved to self-corrected), subject sprints, and time windows. Click a chip and Siko synthesizes a cross-session view — what's recurring, what's improving, what to focus on next.",
+      "The synthesis is grounded in deterministic signals computed on your Mac before any LLM call fires. Siko can't invent a pattern that the data doesn't support.",
+    ],
+  },
+  {
+    q: 'What subjects does it work for?',
+    a: [
+      "Math, English, science, history, and language. Siko detects the subject from what's on screen — no one has to pick.",
+      "It's best on math, where the diagnostic is most precise. It's good on prose subjects (thesis statements, essay structure, historical claims). It's weakest on novel problems with multiple valid approaches.",
+    ],
+  },
+  {
+    q: 'Does it work offline?',
+    a: [
+      "No. Siko sends screenshots to Anthropic (Claude) for analysis, and that requires internet. If the wifi cuts out mid-session, Siko shows a calm message instead of a hint.",
+      "The work can continue offline — the overlay just won't be able to help until the connection is back.",
+    ],
+  },
+  {
+    q: 'Can I pause or disable it?',
+    a: [
+      "Yes. The tray icon has a Pause option (5 min, 15 min, until resumed) and a Quit option. Siko can be paused at any time. The point is to help the student, not to surveil them — Siko is for their use, not for monitoring them.",
+      "The session report only fires when a session ends. If a session is never started, there's nothing to report.",
+    ],
+  },
+  {
+    q: 'What does it cost?',
+    a: [
+      "We're still figuring this out. Likely a small monthly subscription per family. We'll send waitlist members the pricing before launch — and there will be a free trial.",
+    ],
+  },
+  {
+    q: 'Mac only?',
+    a: [
+      "Yes, for now. Siko uses macOS-specific APIs (Screen Recording permission, the menu bar accessory mode, the transparent click-through overlay). A Windows version is on the roadmap but won't ship in v1.",
+    ],
+  },
+  {
+    q: 'What about older students — college, AP?',
+    a: [
+      "It works. The product was designed for K–12 but the pedagogy isn't grade-locked. An older student installs the same app and puts their own email in the report field. The Socratic ladder works whether you're 12 or 19.",
+    ],
+  },
+  {
+    q: 'Where does the name come from?',
+    a: [
+      "The name comes from sikhānā — Hindi for 'to teach.'",
+      "A patient teacher, in software.",
+    ],
+  },
+];
+---
+
+<section id="faq" class="section section-y bg-cream-200/30">
+  <div class="container-page max-w-[920px] mx-auto">
+    <div class="text-center mb-14">
+      <p class="eyebrow">Common questions</p>
+      <h2 class="mt-4 font-serif text-display-2 text-ink-900">
+        Honest answers.
+      </h2>
+    </div>
+
+    <div class="divide-y divide-ink-100 border-y border-ink-100 rounded-none">
+      {FAQS.map((f, i) => (
+        <details class="faq-item group" name="faq">
+          <summary
+            class="cursor-pointer flex items-start gap-4 py-6 list-none [&::-webkit-details-marker]:hidden"
+          >
+            <span class="font-mono text-[11px] text-ink-400 mt-1.5 select-none">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <span class="flex-1 font-serif text-[19px] md:text-[21px] text-ink-900 leading-snug">
+              {f.q}
+            </span>
+            <span
+              class="font-mono text-[14px] text-ink-500 mt-1 transition-transform group-open:rotate-45 select-none"
+              aria-hidden="true"
+            >
+              +
+            </span>
+          </summary>
+          <div class="pl-10 md:pl-10 pr-6 pb-7 -mt-1 space-y-3.5 text-ink-600 text-[15.5px] leading-[1.7] max-w-[60ch]">
+            {f.a.map((p) => <p>{p}</p>)}
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq-item summary:focus-visible {
+    outline: 2px solid theme('colors.gold.300');
+    outline-offset: 4px;
+    border-radius: 6px;
+  }
+</style>

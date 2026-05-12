@@ -1,0 +1,101 @@
+/* Siko global styles.
+   Tailwind layers + tiny base reset + utility classes for the recurring
+   "eyebrow", "mono-tag" and "rule" patterns that appear across sections. */
+
+@import "@fontsource-variable/fraunces/index.css";
+@import "@fontsource-variable/fraunces/wght-italic.css";
+@import "@fontsource-variable/inter/index.css";
+@import "@fontsource-variable/jetbrains-mono/index.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-cream text-ink font-sans antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+  /* Reduced-motion: the product honors this too. The page leans on a
+     few infinite animations (bubble breathing, dot pulse, mark glow);
+     these collapse to static for accessibility. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 120ms !important;
+    }
+  }
+  ::selection {
+    background: rgba(184, 137, 58, 0.22);
+    color: theme('colors.ink.900');
+  }
+}
+
+@layer components {
+  /* Eyebrow — the small all-caps mono label that sits above many
+     section headlines. Spec-sheet feel; comes from the email report's
+     uppercase eyebrow style. */
+  .eyebrow {
+    @apply font-mono text-[11px] uppercase tracking-eyebrow text-ink-500 font-medium;
+  }
+  /* Mono inline tag — used for "anywhere", "L1", file extensions, etc. */
+  .mono-tag {
+    @apply font-mono text-[12px] text-ink-600;
+  }
+  /* Page section padding — vertical rhythm */
+  .section {
+    @apply px-6 md:px-10;
+  }
+  .section-y {
+    @apply py-20 md:py-28 lg:py-36;
+  }
+  .section-y-tight {
+    @apply py-14 md:py-18;
+  }
+  /* Page max width container */
+  .container-page {
+    @apply mx-auto w-full max-w-page;
+  }
+  /* Subtle rule line — used between sections that share the same bg */
+  .rule {
+    @apply border-t border-ink-100;
+  }
+  /* Card surface used on the Method and Features cards */
+  .card-cream {
+    @apply rounded-2xl border border-ink-100 bg-white/60 backdrop-blur-sm;
+  }
+  /* Dark inset for product moments. Echoes the overlay's
+     rgba(22, 24, 30, 0.92) + backdrop-blur look. */
+  .surface-dark {
+    background: rgba(22, 24, 30, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 24px 80px -20px rgba(0, 0, 0, 0.45),
+                0 6px 20px -8px rgba(0, 0, 0, 0.35);
+  }
+  /* The "linen" subtle texture under the hero — very faint cross-hatch
+     so the cream doesn't look flat. Implemented as two layered
+     gradients for zero asset weight. */
+  .linen {
+    background-image:
+      linear-gradient(180deg, rgba(184, 137, 58, 0.04) 0%, rgba(184, 137, 58, 0) 100%),
+      radial-gradient(1200px 600px at 50% -10%, rgba(245, 239, 216, 0.85), transparent 70%);
+  }
+  /* Italic accent for the one emphatic display word — uses Fraunces
+     italic with optical sizing leaned slightly toward display. */
+  .accent-italic {
+    font-style: italic;
+    font-variation-settings: "opsz" 144, "SOFT" 50;
+    color: theme('colors.gold.400');
+  }
+  /* Link inside body prose */
+  .link {
+    @apply text-gold-400 underline decoration-gold-200 decoration-from-font underline-offset-4 hover:text-gold-500 hover:decoration-gold-400 transition-colors;
+  }
+}

@@ -1,0 +1,94 @@
+---
+import DashboardView from './product/DashboardView.astro';
+---
+
+<section id="patterns" class="section section-y">
+  <div class="container-page">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+      <div class="lg:col-span-5">
+        <p class="eyebrow">Across sessions</p>
+        <h2 class="mt-4 font-serif text-display-2 text-ink-900 leading-[1.05]">
+          The patterns no single
+          session can <span class="accent-italic">show</span>.
+        </h2>
+        <p class="mt-6 text-ink-600 text-[16.5px] leading-[1.65] max-w-[44ch]">
+          After a few sessions, open the Patterns dashboard and Siko
+          surfaces what&rsquo;s happening across the arc &mdash; the concept that
+          keeps recurring, the one quietly figured out, where the
+          trajectory is going. Two ways to use it: self-tracking for an
+          older student watching their own arc, or parental observability
+          for a family that wants to share the view.
+        </p>
+
+        <dl class="mt-9 space-y-7 max-w-[44ch]">
+          <div>
+            <dt class="flex items-center gap-2 font-mono text-[11px] uppercase tracking-eyebrow text-terra mb-1.5">
+              <span aria-hidden="true">↻</span> Recurring sticking points
+            </dt>
+            <dd class="text-ink-700 text-[15px] leading-[1.6]">
+              Concepts that show up in two or more sessions. Siko names
+              the specific pattern &mdash; not &ldquo;trouble with algebra,&rdquo; but
+              &ldquo;distributing negative terms in 3(x − 4), 4(y − 3), and 3(z − 5).&rdquo;
+            </dd>
+          </div>
+          <div>
+            <dt class="flex items-center gap-2 font-mono text-[11px] uppercase tracking-eyebrow text-sage mb-1.5">
+              <span aria-hidden="true">★</span> Breakthroughs
+            </dt>
+            <dd class="text-ink-700 text-[15px] leading-[1.6]">
+              Concepts that went from unresolved in an early session to
+              self-corrected in a later one. Where it was, where it is &mdash;
+              named, dated, real.
+            </dd>
+          </div>
+          <div>
+            <dt class="flex items-center gap-2 font-mono text-[11px] uppercase tracking-eyebrow text-gold-400 mb-1.5">
+              <span aria-hidden="true">⤳</span> Trajectory of independence
+            </dt>
+            <dd class="text-ink-700 text-[15px] leading-[1.6]">
+              Resolve rate across sessions, hints requested over time.
+              The numbers show, plainly, whether the student is getting
+              unstuck faster on their own.
+            </dd>
+          </div>
+          <div>
+            <dt class="flex items-center gap-2 font-mono text-[11px] uppercase tracking-eyebrow text-dusty mb-1.5">
+              <span aria-hidden="true">◷</span> Subject balance
+            </dt>
+            <dd class="text-ink-700 text-[15px] leading-[1.6]">
+              How time is splitting across math, English, science, history.
+              Useful when one subject is silently eating the week.
+            </dd>
+          </div>
+        </dl>
+
+        <div class="mt-10 rounded-xl border border-ink-100 bg-cream-50 p-5 max-w-[44ch]">
+          <p class="font-mono text-[11px] uppercase tracking-eyebrow text-ink-500 mb-2">
+            How Siko avoids making things up
+          </p>
+          <p class="text-ink-700 text-[14px] leading-[1.6]">
+            Every pattern claim is grounded in a deterministic signal Siko
+            computes on your Mac before any LLM call &mdash; recurring concept
+            clusters across sessions, breakthrough arcs, resolve-rate
+            trends. The AI writes the voice around those facts. It can&rsquo;t
+            invent a recurrence that didn&rsquo;t happen.
+          </p>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7">
+        <div class="dash-frame">
+          <DashboardView />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .dash-frame {
+    border-radius: 18px;
+    padding: 10px;
+    background: linear-gradient(160deg, rgba(20, 18, 12, 0.06), rgba(20, 18, 12, 0.02));
+  }
+</style>

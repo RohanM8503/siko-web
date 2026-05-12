@@ -1,0 +1,289 @@
+---
+// Mock of the real parent email Siko sends after every session.
+// Structure mirrors main.js formatReportEmail() — eyebrow, name + subject,
+// metadata, tone-colored headline border, activity line, focus bar,
+// engagement bullets, concepts, "where stuck" cards with yellow border,
+// strengths, recommended next, and the brand-statement footer.
+//
+// This particular scene shows a MULTI-SUBJECT session (Math + History)
+// — the real product auto-detects subjects from screen content and the
+// email subject line aggregates whatever was seen, so a kid switching
+// from algebra homework to a history short-answer prompt produces one
+// session report covering both. Demonstrates the range without claiming
+// anything the product doesn't actually do.
+---
+
+<div class="email-frame">
+  <div class="window-chrome">
+    <div class="lights">
+      <span class="light red"></span>
+      <span class="light yellow"></span>
+      <span class="light green"></span>
+    </div>
+    <div class="addr">
+      <span class="from">From&nbsp;</span>Siko &lt;reports@trysiko.com&gt;
+      <span class="sep">·</span>
+      <span class="from">To&nbsp;</span>sarah@gmail.com, sarah-mom@gmail.com
+    </div>
+    <div class="spacer"></div>
+  </div>
+
+  <div class="subject-line">
+    <span class="subject-eyebrow">Subject</span>
+    Sarah &mdash; Math + History &mdash; Wed Apr 30 at 7:14 PM &mdash; 42 min
+  </div>
+
+  <div class="email-body">
+    <div class="header">
+      <div class="eyebrow">Siko &middot; Study session report</div>
+      <div class="title">Sarah &middot; Math + History</div>
+      <div class="meta">Wed, Apr 30 at 7:14 PM &middot; 42 min</div>
+    </div>
+
+    <div class="headline">
+      Sarah worked through three linear-equation problems and a short-answer history prompt; got stuck distributing a negative term, and on naming the second cause of the American Revolution.
+    </div>
+
+    <div class="section">
+      <div class="section-eyebrow">Activity</div>
+      <div class="activity-line">42 min total &middot; 33 min active, 9 min idle &middot; 5 hints &middot; 1 stuck moment</div>
+      <div class="bar">
+        <div class="bar-fill" style="width: 78%;"></div>
+      </div>
+      <div class="bar-caption">78% of observed time was active screen activity</div>
+    </div>
+
+    <div class="section">
+      <div class="section-eyebrow">Engagement</div>
+      <div class="line"><b>5 hints shown</b> <span class="dim">&mdash; 4 got it &middot; 1 walk-through</span></div>
+      <div class="line"><b>2 quizzes attempted</b> <span class="dim">&mdash; 1/2 correct</span></div>
+      <div class="line"><b>1 concept explanation</b> <span class="dim">&mdash; balancing equations</span></div>
+    </div>
+
+    <div class="section">
+      <div class="section-eyebrow">Concepts engaged</div>
+      <ul>
+        <li>Distributive property with negative terms</li>
+        <li>Combining like terms in linear equations</li>
+        <li>Causes of the American Revolution (Stamp Act, Quartering Act)</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-eyebrow">Where Sarah got stuck</div>
+      <div class="stuck-card">
+        <div class="stuck-tag">Math</div>
+        <div class="stuck-concept">Distributing a constant into a binomial with a negative term</div>
+        <div class="stuck-context">Wrote 5x &minus; 4 instead of 5x &minus; 10 when distributing 5 into (x &minus; 2).</div>
+        <div class="stuck-resolved"><span class="arrow">&rarr;</span> Resolved after a Socratic walk-through on a kinematics problem &mdash; same skill, different surface.</div>
+      </div>
+      <div class="stuck-card">
+        <div class="stuck-tag">History</div>
+        <div class="stuck-concept">Identifying the second cause of the American Revolution</div>
+        <div class="stuck-context">Listed &ldquo;taxation without representation&rdquo; for both blanks on a two-cause prompt.</div>
+        <div class="stuck-resolved"><span class="arrow">&rarr;</span> Got it at L2 once Siko pointed at the Quartering Act and asked what colonists were forced to provide.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-eyebrow">Strengths observed</div>
+      <ul>
+        <li>Recognized the need to combine like terms without prompting on problems 2 and 3</li>
+        <li>Stayed engaged for the full 42-minute session across two subjects</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-eyebrow">Recommended next session</div>
+      <div class="line">Five minutes of practice on distribution with negative terms (try 6(z &minus; 3) + 4 = 22), then revisit the colonial-era timeline so the Stamp Act and Quartering Act don&rsquo;t blur together.</div>
+    </div>
+
+    <div class="footer">
+      Siko refuses to give answers &mdash; every hint above is a Socratic question or nudge that asks Sarah to do the thinking.
+    </div>
+  </div>
+</div>
+
+<style>
+  .email-frame {
+    width: 100%;
+    max-width: 600px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(20, 18, 12, 0.08);
+    box-shadow:
+      0 40px 80px -24px rgba(20, 18, 12, 0.22),
+      0 12px 24px -10px rgba(20, 18, 12, 0.12);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    color: #1A1A1F;
+  }
+
+  .window-chrome {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 34px;
+    padding: 0 14px;
+    background: linear-gradient(180deg, #EDEDF0, #E1E1E5);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    font-size: 12px;
+    color: #5A5A66;
+  }
+  .lights { display: flex; gap: 6px; }
+  .light {
+    width: 11px; height: 11px; border-radius: 50%;
+    box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.12);
+  }
+  .red    { background: #FE5F58; }
+  .yellow { background: #FFBC2E; }
+  .green  { background: #28C941; }
+  .addr   { flex: 1; text-align: center; font-size: 11.5px; letter-spacing: 0.005em; }
+  .from   { color: #8B8B96; }
+  .sep    { color: #C5C5CC; margin: 0 6px; }
+  .spacer { width: 49px; }
+
+  .subject-line {
+    padding: 11px 22px;
+    background: #FAFAFC;
+    border-bottom: 1px solid #ECECF1;
+    font-size: 13px;
+    color: #2A2A32;
+  }
+  .subject-eyebrow {
+    font-size: 10px;
+    color: #8B8B96;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    font-weight: 600;
+    margin-right: 8px;
+  }
+
+  .email-body {
+    padding: 22px 24px 22px;
+  }
+
+  .header {
+    padding-bottom: 14px;
+    border-bottom: 1px solid #ECECF1;
+    margin-bottom: 16px;
+  }
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: #8B8B96;
+    font-weight: 600;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1A1A1F;
+    margin-top: 6px;
+  }
+  .meta {
+    font-size: 13px;
+    color: #6B6B78;
+    margin-top: 4px;
+  }
+
+  .headline {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: #1A1A1F;
+    border-left: 3px solid #C8C8D0;
+    padding-left: 12px;
+    margin: 4px 0 18px;
+  }
+
+  .section { margin: 14px 0; }
+  .section-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: #8B8B96;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .activity-line { font-size: 13.5px; color: #2A2A32; }
+  .bar {
+    background: #F3F3F5;
+    border-radius: 5px;
+    height: 5px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .bar-fill { background: #C8C8D0; height: 100%; }
+  .bar-caption {
+    font-size: 10.5px;
+    color: #8B8B96;
+    margin-top: 4px;
+  }
+  .line {
+    font-size: 13.5px;
+    color: #2A2A32;
+    line-height: 1.5;
+    margin: 4px 0;
+  }
+  .line b { font-weight: 600; color: #1A1A1F; }
+  .dim { color: #6B6B78; }
+
+  ul {
+    margin: 0;
+    padding-left: 20px;
+    color: #2A2A32;
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+  ul li { margin: 2px 0; }
+
+  .stuck-card {
+    position: relative;
+    padding: 11px 13px;
+    background: #FAFAFC;
+    border-left: 3px solid #FFD84D;
+    border-radius: 4px;
+    margin: 6px 0;
+  }
+  .stuck-tag {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8B6F1F;
+    background: #FFF6D9;
+    border-radius: 3px;
+    padding: 1px 6px;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .stuck-concept {
+    font-weight: 600;
+    font-size: 13.5px;
+    color: #1A1A1F;
+    margin-bottom: 3px;
+  }
+  .stuck-context {
+    font-size: 12.5px;
+    color: #4A4A55;
+    margin-bottom: 4px;
+  }
+  .stuck-resolved {
+    font-size: 12.5px;
+    color: #6B6B78;
+  }
+  .arrow {
+    font-weight: 600;
+    color: #4A4A55;
+    margin-right: 4px;
+  }
+
+  .footer {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid #ECECF1;
+    font-size: 11.5px;
+    color: #6B6B78;
+    line-height: 1.55;
+  }
+</style>

@@ -1,0 +1,133 @@
+---
+import HomeworkPage from './product/HomeworkPage.astro';
+import HintCard from './product/HintCard.astro';
+import Bubble from './product/Bubble.astro';
+---
+
+<section class="hero linen section pt-10 md:pt-14 lg:pt-20 pb-24 md:pb-32">
+  <div class="container-page">
+    {/* Eyebrow — declarative, affirmative, sets up the pedagogy without
+        jargon. The kid-doing-the-thinking framing is the whole pitch. */}
+    <p class="eyebrow mb-7">Built to help, not solve.</p>
+
+    {/* Headline */}
+    <h1 class="font-serif text-display-1 text-ink-900 max-w-[18ch]">
+      A patient teacher
+      that lives on your <span class="accent-italic">desk</span>.
+    </h1>
+
+    {/* Subhead */}
+    <p class="mt-7 md:mt-8 max-w-[58ch] text-ink-600 text-[17px] md:text-[18px] leading-[1.55]">
+      Siko watches the homework wherever it is &mdash; Pages, a PDF in Preview,
+      Google Docs, Khan Academy &mdash; and gives Socratic hints when stuck.
+      It <strong class="text-ink-900 font-medium">never</strong> gives the answer.
+      That&rsquo;s the whole point.
+    </p>
+
+    {/* CTAs */}
+    <div class="mt-9 flex flex-wrap items-center gap-3">
+      <a
+        href="#waitlist"
+        class="inline-flex items-center gap-2 rounded-full bg-ink-900 text-cream-100 px-5 py-3 text-[14px] font-medium hover:bg-ink-700 transition-colors"
+      >
+        Join the waitlist
+        <span aria-hidden="true">&rarr;</span>
+      </a>
+      <a
+        href="#how"
+        class="inline-flex items-center gap-2 rounded-full border border-ink-100 text-ink-900 px-5 py-3 text-[14px] font-medium hover:bg-white/70 transition-colors"
+      >
+        See how it works
+        <span aria-hidden="true">&darr;</span>
+      </a>
+      <span class="ml-2 font-mono text-[12px] text-ink-500">
+        macOS&nbsp;13+ &middot; Middle school &rarr; senior year &middot; Math, English, science, history, SAT/ACT/AP &middot; private by default
+      </span>
+    </div>
+
+    {/* The product scene — two-column grid so the hint card naturally
+        sits next to the homework page, vertically centered. The bubble
+        floats at the bottom-right corner of the whole composition. */}
+    <div class="hero-scene mt-14 md:mt-20">
+      <div class="scene-wrap">
+        <div class="scene-grid">
+          <div class="hw-col">
+            <HomeworkPage markLine={0} class="scene-page" />
+          </div>
+          <div class="hint-col">
+            <HintCard
+              level={1}
+              subject="math"
+              hint="Take another look at the second term on your first line — what does 5 multiply across?"
+            />
+          </div>
+        </div>
+
+        {/* The ambient bubble in the bottom-right corner of the scene. */}
+        <div class="scene-bubble">
+          <Bubble state="watching" text="12:34 · here when you need me" />
+        </div>
+      </div>
+
+      <p class="mt-8 md:mt-10 max-w-prose-wide mx-auto text-center font-mono text-[12px] text-ink-500 leading-relaxed">
+        The real overlay, on real work. The yellow box highlights the first wrong step &mdash;
+        the student&rsquo;s line, never the original problem &mdash; and the hint asks a question
+        instead of giving the answer.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-scene { position: relative; }
+  .scene-wrap {
+    position: relative;
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+  .scene-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 32px;
+    align-items: center;
+  }
+  .hw-col { min-width: 0; }
+  .hint-col {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+  .hint-col :global(.hint-card) {
+    width: 100%;
+    max-width: 420px;
+  }
+  .scene-page { display: block; }
+
+  /* Corner bubble — bottom-right of the whole scene, floating slightly
+     below the homework's bottom edge so it reads as "the bubble lives
+     just past the screen corner." */
+  .scene-bubble {
+    position: absolute;
+    right: 0;
+    bottom: -28px;
+    z-index: 6;
+  }
+
+  @media (max-width: 900px) {
+    /* On narrower viewports, stack: homework on top, hint card below,
+       bubble flush right at the bottom. */
+    .scene-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 20px;
+    }
+    .hint-col {
+      justify-content: flex-end;
+    }
+    .scene-bubble {
+      position: static;
+      margin-top: 20px;
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+</style>

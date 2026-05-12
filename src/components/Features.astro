@@ -1,0 +1,262 @@
+---
+// Sticky-nav features section, LangChain-style. Each feature is one
+// of Siko's named action paths (lib/prompts.js + overlay.js):
+//   Hint  ·  Check work  ·  Quiz me  ·  Explain
+//
+// "Try with me" appears in the Method section as the L3 escalation of
+// the Hint flow — it lives there conceptually, not as a peer of these
+// four. Keeping it out of this list avoids the duplication.
+//
+// Each per-feature visual uses a different subject so the page
+// demonstrates that Siko works across the K-12 curriculum, not just
+// math: Hint shows an SAT-style English passage moment, Check work
+// shows the soft-prompt bubble (subject-agnostic), Quiz me shows a
+// math fraction problem, and Explain shows a chemistry concept.
+import Bubble from './product/Bubble.astro';
+import HintCard from './product/HintCard.astro';
+import SatPassage from './product/SatPassage.astro';
+import FauxQuiz from './FauxQuiz.astro';
+import FauxExplain from './FauxExplain.astro';
+
+// Order: ask → understand → practice → verify. Reads as the natural
+// learning arc — get unstuck, zoom out to the concept, apply it on
+// a new problem, then confirm the work.
+const FEATURES = [
+  {
+    id: 'hint',
+    name: 'Hint',
+    one: '⌘⇧Space — a Socratic hint, escalated up to three times.',
+    body: [
+      'The fast path. Hit ⌘⇧Space; in about three seconds Siko looks at the screen, finds the first wrong step (not a later step that\'s consistent with an earlier broken one), draws a yellow box, and asks a question.',
+      'Press ⌘⇧Space again to escalate: L1 nudge → L2 concept → L3 concrete step. The exact same flow works whether the student is doing algebra, debugging a thesis, or reading an SAT passage — subject is auto-detected from what\'s on screen.',
+    ],
+  },
+  {
+    id: 'explain',
+    name: 'Explain',
+    one: 'Zoom out from this problem to the concept.',
+    body: [
+      'When the student wants to understand the topic, not just solve the problem. Siko picks a format based on the concept: equation- and rule-based concepts (chemistry balancing, kinematics, distribution) get a Rule / Why / worked example / Watch out card. Prose-based concepts (thesis statements, photosynthesis, causes of historical events) get plain paragraphs.',
+      'Same constraint as everywhere else: small, specific, and never a model paragraph the student can copy verbatim.',
+    ],
+  },
+  {
+    id: 'quiz',
+    name: 'Quiz me',
+    one: 'A similar problem, gently graded.',
+    body: [
+      'Practice on the concept that just gave them trouble. Siko generates one problem of equivalent difficulty (round numbers, no traps), accepts a typed answer, and grades it leniently on form — 1.5, 3/2, and 1½ are all the same answer.',
+      'Wrong answers come back with a one-sentence redirect that doesn\'t reveal the right answer. Then "Try another."',
+    ],
+  },
+  {
+    id: 'check',
+    name: 'Check work',
+    one: '"done with that? tap to check."',
+    body: [
+      'Click the bubble during a pause and Siko runs a conservative validator on the work it can see. Three outcomes: a green ✓ "looks right — keep going" if everything checks out, a friendly "nothing to check yet" if no work is on screen, or a hint if it found a real, definite mistake.',
+      'Siko never invents mistakes. The validator is confidence-gated — false positives destroy trust, so when in doubt it stays silent.',
+    ],
+  },
+];
+---
+
+<style>
+  /* Hint feature composition — SAT passage on the left, hint card on the
+     right, with the hint card overlapping vertically into the bottom of
+     the passage area. Reads as "Siko sitting next to the kid's screen"
+     rather than a flat side-by-side. */
+  .hint-scene {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+    gap: 20px;
+    align-items: center;
+  }
+  .hint-sat { min-width: 0; }
+  .hint-card-col {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+  .hint-card-col :global(.hint-card) {
+    width: 100%;
+    max-width: 340px;
+  }
+  @media (max-width: 900px) {
+    .hint-scene {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
+    }
+    .hint-card-col { justify-content: flex-end; }
+  }
+
+  /* Check work composition — vertical flow: trigger → tap → two outcomes
+     side by side. Labels above each bubble identify which state it is. */
+  .check-scene {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 720px;
+  }
+  .check-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .check-step .step-label {
+    font-family: 'JetBrains Mono Variable', JetBrains Mono, ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.40);
+  }
+  .check-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    margin: 2px 0;
+  }
+  .check-arrow .arrow-text {
+    font-family: 'JetBrains Mono Variable', JetBrains Mono, ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.32);
+  }
+  .check-arrow .arrow-line {
+    width: 1px;
+    height: 18px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.20), rgba(255,255,255,0.04));
+  }
+  .check-outcomes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    width: 100%;
+    margin-top: 4px;
+  }
+  @media (max-width: 720px) {
+    .check-outcomes {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+</style>
+
+<section id="features" class="section section-y">
+  <div class="container-page">
+    <div class="max-w-prose-wide">
+      <p class="eyebrow">What Siko does</p>
+      <h2 class="mt-4 font-serif text-display-2 text-ink-900">
+        Four ways to help.<br />
+        Same Socratic posture in all of them.
+      </h2>
+      <p class="mt-5 text-ink-600 text-[16.5px] leading-[1.65] max-w-[60ch]">
+        Math, English, science, history, language. Siko detects the
+        subject from what&rsquo;s on screen &mdash; no one has to pick.
+      </p>
+    </div>
+
+    <div class="mt-14 grid grid-cols-1 lg:grid-cols-12 gap-10">
+      {/* Sticky vertical nav */}
+      <aside class="lg:col-span-3 lg:sticky lg:top-24 self-start" aria-hidden="true">
+        <nav class="font-mono text-[12px] text-ink-500">
+          <ul class="space-y-2.5 border-l border-ink-100 pl-4">
+            {FEATURES.map((f) => (
+              <li>
+                <a href={`#feat-${f.id}`} class="hover:text-ink-900 transition-colors">
+                  {f.name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+
+      {/* Per-feature viewports */}
+      <div class="lg:col-span-9 space-y-20 md:space-y-28">
+        {FEATURES.map((f, i) => (
+          <article id={`feat-${f.id}`} class="scroll-mt-24">
+            <div class="flex items-baseline gap-4 mb-5">
+              <span class="font-mono text-[12px] text-gold-400">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="font-serif text-display-3 text-ink-900">{f.name}</h3>
+            </div>
+            <p class="text-ink-600 text-[18px] leading-[1.5] max-w-[44ch] mb-4 font-serif" style="font-variation-settings: 'opsz' 14;">
+              {f.one}
+            </p>
+            <div class="text-ink-600 text-[15px] leading-[1.7] space-y-4 max-w-[60ch]">
+              {f.body.map((p) => <p>{p}</p>)}
+            </div>
+
+            {/* Per-feature visual */}
+            <div class:list={[
+              'mt-8 rounded-2xl bg-ink-900',
+              f.id === 'hint'
+                ? 'p-5 md:p-7'
+                : 'p-6 md:p-10 flex justify-center items-center min-h-[220px]',
+            ]}>
+              {f.id === 'hint' && (
+                <div class="hint-scene">
+                  <div class="hint-sat">
+                    <SatPassage />
+                  </div>
+                  <div class="hint-card-col">
+                    <HintCard
+                      level={1}
+                      subject="english"
+                      hint="Notice the word ‘Indeed’ at the start of the underlined sentence. What does it usually do when it begins a sentence?"
+                    />
+                  </div>
+                </div>
+              )}
+              {f.id === 'check' && (
+                <div class="check-scene">
+                  {/* Three bubbles showing the soft-prompt → tap → outcome
+                      sequence. The two outcomes shown are the meaningful
+                      ones: clean (green ✓) and mistake-found (hint-up
+                      yellow). The "no work yet" friendly case exists in
+                      the product but isn't worth visual real estate
+                      here. The hint-up bubble's "hint shown" copy points
+                      back at the Hint feature visualized just above. */}
+                  <div class="check-step">
+                    <span class="step-label">The nudge</span>
+                    <Bubble state="soft-prompt" tail={false} />
+                  </div>
+                  <div class="check-arrow" aria-hidden="true">
+                    <span class="arrow-text">tap</span>
+                    <span class="arrow-line"></span>
+                  </div>
+                  <div class="check-outcomes">
+                    <div class="check-step">
+                      <span class="step-label">If the work checks out</span>
+                      <Bubble state="correct" tail={false} />
+                    </div>
+                    <div class="check-step">
+                      <span class="step-label">If Siko found a mistake</span>
+                      <Bubble state="hint-up" tail={false} />
+                    </div>
+                  </div>
+                </div>
+              )}
+              {f.id === 'quiz' && <FauxQuiz />}
+              {f.id === 'explain' && <FauxExplain />}
+            </div>
+
+            {/* Per-feature subject tag */}
+            <div class="mt-4 flex items-center gap-3 font-mono text-[11px] text-ink-400">
+              {f.id === 'hint' && <span>example shown: SAT reading-comprehension MCQ</span>}
+              {f.id === 'check' && <span>example shown: math (no work yet)</span>}
+              {f.id === 'quiz' && <span>example shown: SAT-style algebra</span>}
+              {f.id === 'explain' && <span>example shown: chemistry — balancing equations</span>}
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

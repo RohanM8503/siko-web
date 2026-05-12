@@ -1,0 +1,211 @@
+---
+// Siko's corner bubble — mocked pixel-faithfully from overlay.html.
+// State drives the dot color and the body copy.
+//
+// In the real product, the bubble breathes (opacity 0.96 → 1.0 on a 4.2s
+// cycle) and the dot pulses. We honor prefers-reduced-motion via the
+// global stylesheet's @media block; the animations are wired in
+// tailwind.config.mjs.
+type State =
+  | 'idle'
+  | 'watching'
+  | 'soft-prompt'
+  | 'thinking'
+  | 'has-thought'
+  | 'hint-up'
+  | 'correct'
+  | 'no-work';
+
+interface Props {
+  state?: State;
+  /** When set, overrides the default copy for the given state. */
+  text?: string;
+  /** Render the small speech tail pointing toward the corner. */
+  tail?: boolean;
+  class?: string;
+}
+
+const { state = 'watching', text, tail = true, class: className = '' } = Astro.props;
+
+const COPY: Record<State, string> = {
+  idle: 'ready when you are',
+  watching: '12:34 · here when you need me',
+  'soft-prompt': 'done with that? tap to check',
+  thinking: 'thinking…',
+  'has-thought': 'I noticed something — tap for a hint',
+  'hint-up': 'hint shown · press ⌘⇧. to dismiss',
+  correct: '✓ looks right — keep going',
+  'no-work': 'nothing to check yet — start writing',
+};
+
+// Dot color by state — matches overlay.html exactly.
+const DOT: Record<State, string> = {
+  idle: 'rgba(255,255,255,0.55)',
+  watching: 'rgba(140, 220, 160, 0.95)',
+  'soft-prompt': 'rgba(120, 210, 220, 1)',
+  thinking: 'rgba(120, 180, 255, 1)',
+  'has-thought': 'rgba(255, 216, 77, 1)',
+  'hint-up': 'rgba(255, 216, 77, 1)',
+  correct: 'rgba(120, 220, 150, 1)',
+  'no-work': 'rgba(180, 180, 200, 0.9)',
+};
+
+const DOT_GLOW: Record<State, string> = {
+  idle: '0 0 10px rgba(255,255,255,0.28)',
+  watching: '0 0 10px rgba(140, 220, 160, 0.55)',
+  'soft-prompt': '0 0 14px rgba(120, 210, 220, 0.75)',
+  thinking: '0 0 14px rgba(120, 180, 255, 0.8)',
+  'has-thought': '0 0 18px rgba(255, 216, 77, 0.95)',
+  'hint-up': '0 0 14px rgba(255, 216, 77, 0.85)',
+  correct: '0 0 18px rgba(120, 220, 150, 0.95)',
+  'no-work': '0 0 8px rgba(180, 180, 200, 0.45)',
+};
+
+// Per-state border tint — gives each state its own personality.
+const BORDER: Record<State, string> = {
+  idle: 'rgba(255,255,255,0.10)',
+  watching: 'rgba(140, 220, 160, 0.32)',
+  'soft-prompt': 'rgba(120, 210, 220, 0.55)',
+  thinking: 'rgba(120, 180, 255, 0.45)',
+  'has-thought': 'rgba(255, 216, 77, 0.65)',
+  'hint-up': 'rgba(255, 216, 77, 0.5)',
+  correct: 'rgba(120, 220, 150, 0.7)',
+  'no-work': 'rgba(180, 180, 200, 0.45)',
+};
+
+const display = text ?? COPY[state];
+
+// Split watching copy on " · " so the CTA half can be tinted yellow,
+// matching the bubble-cta span in overlay.js.
+const [elapsed, cta] = state === 'watching' && display.includes(' · ')
+  ? display.split(' · ', 2)
+  : [display, null];
+---
+
+<div
+  class:list={['siko-bubble', className]}
+  style={`--border: ${BORDER[state]}; --dot: ${DOT[state]}; --dot-glow: ${DOT_GLOW[state]};`}
+  data-state={state}
+>
+  <div class="row">
+    <span class="dot" aria-hidden="true"></span>
+    <span class="text">
+      {cta ? (
+        <>
+          {elapsed} · <span class="cta">{cta}</span>
+        </>
+      ) : (
+        display
+      )}
+    </span>
+  </div>
+  {tail && <span class="tail" aria-hidden="true"></span>}
+</div>
+
+<style>
+  .siko-bubble {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    min-width: 240px;
+    max-width: 440px;
+    padding: 14px 18px 14px 16px;
+    background: rgba(22, 24, 30, 0.96);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter Variable', Inter, sans-serif;
+    font-size: 14.5px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.94);
+    box-shadow:
+      0 16px 40px rgba(0, 0, 0, 0.45),
+      0 4px 12px rgba(0, 0, 0, 0.25),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    animation: bubbleBreath 4.2s ease-in-out infinite;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+  }
+  .dot {
+    flex-shrink: 0;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--dot);
+    box-shadow: var(--dot-glow);
+    animation: dotPulse 3.6s ease-in-out infinite;
+  }
+  .text {
+    flex: 1;
+    min-width: 0;
+    color: rgba(255, 255, 255, 0.94);
+  }
+  .cta {
+    color: rgba(255, 216, 130, 0.95);
+    font-weight: 600;
+    letter-spacing: 0.015em;
+  }
+  /* Speech tail — small rotated square that anchors the bubble to the
+     screen corner, exactly like the real overlay's ::after. */
+  .tail {
+    position: absolute;
+    right: 22px;
+    bottom: -6px;
+    width: 12px;
+    height: 12px;
+    background: rgba(22, 24, 30, 0.96);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    transform: rotate(45deg);
+    border-bottom-right-radius: 3px;
+  }
+
+  /* has-thought gets the warm gold glow halo */
+  [data-state='has-thought'] {
+    background: rgba(34, 28, 16, 0.96);
+    box-shadow:
+      0 16px 40px rgba(0, 0, 0, 0.45),
+      0 0 32px 4px rgba(255, 216, 77, 0.28),
+      inset 0 0 0 1px rgba(255, 216, 77, 0.10);
+  }
+  [data-state='soft-prompt'] {
+    background: rgba(18, 28, 32, 0.96);
+    box-shadow:
+      0 16px 40px rgba(0, 0, 0, 0.45),
+      0 0 24px 2px rgba(120, 210, 220, 0.18),
+      inset 0 0 0 1px rgba(120, 210, 220, 0.10);
+  }
+  /* correct — the receipt the kid gets when their work checks out.
+     Soft green glow + slight pop. */
+  [data-state='correct'] {
+    background: rgba(16, 32, 22, 0.96);
+    color: rgba(220, 250, 230, 0.98);
+    box-shadow:
+      0 16px 40px rgba(0, 0, 0, 0.45),
+      0 0 28px 4px rgba(120, 220, 150, 0.32),
+      inset 0 0 0 1px rgba(120, 220, 150, 0.14);
+  }
+  /* no-work — kid tapped before writing anything. Calm neutral. */
+  [data-state='no-work'] {
+    background: rgba(24, 24, 32, 0.94);
+    color: rgba(225, 225, 235, 0.95);
+  }
+
+  @keyframes bubbleBreath {
+    0%, 100% { opacity: 0.96; }
+    50%      { opacity: 1.00; }
+  }
+  @keyframes dotPulse {
+    0%, 100% { opacity: 0.55; transform: scale(0.92); }
+    50%      { opacity: 1;    transform: scale(1.06); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .siko-bubble, .dot { animation: none; }
+  }
+</style>

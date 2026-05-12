@@ -1,0 +1,59 @@
+---
+import EmailReport from './product/EmailReport.astro';
+---
+
+<section id="report" class="section section-y bg-cream-200/40">
+  <div class="container-page">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      <div class="lg:col-span-5">
+        <p class="eyebrow">After every session</p>
+        <h2 class="mt-4 font-serif text-display-2 text-ink-900 leading-[1.05]">
+          A thoughtful email
+          after every <span class="accent-italic">session</span>.
+        </h2>
+        <p class="mt-6 text-ink-600 text-[16.5px] leading-[1.65] max-w-[44ch]">
+          Every Siko session ends with an honest email to whoever&rsquo;s on the
+          report list &mdash; your own address for self-tracking, a parent&rsquo;s for
+          observability, or both. It says, specifically, what got worked on
+          and where things got stuck.
+        </p>
+
+        <dl class="mt-9 space-y-6 max-w-[42ch]">
+          <div>
+            <dt class="font-mono text-[11px] uppercase tracking-eyebrow text-gold-400 mb-1.5">Honest</dt>
+            <dd class="text-ink-700 text-[15px] leading-[1.6]">
+              We never invent metrics. The numbers in the email are counted
+              directly from the session, not guessed.
+            </dd>
+          </div>
+          <div>
+            <dt class="font-mono text-[11px] uppercase tracking-eyebrow text-gold-400 mb-1.5">Specific</dt>
+            <dd class="text-ink-700 text-[15px] leading-[1.6]">
+              &ldquo;Got stuck distributing the 5 across <em>(x &minus; 2)</em>&rdquo; &mdash;
+              not &ldquo;had trouble with math.&rdquo;
+            </dd>
+          </div>
+          <div>
+            <dt class="font-mono text-[11px] uppercase tracking-eyebrow text-gold-400 mb-1.5">Calibrated</dt>
+            <dd class="text-ink-700 text-[15px] leading-[1.6]">
+              The tone shifts based on what actually happened &mdash;
+              encouraging, neutral, or concerned. Never pathologizing.
+            </dd>
+          </div>
+        </dl>
+
+        <p class="mt-10 pl-5 border-l-2 border-gold-300 text-ink-700 text-[15px] leading-[1.65] italic max-w-[44ch] font-serif" style="font-variation-settings: 'opsz' 14;">
+          &ldquo;Siko refuses to give answers &mdash; every hint above is a Socratic
+          question or nudge that asks the student to do the thinking.&rdquo;
+          <span class="block mt-2 not-italic font-mono text-[11px] uppercase tracking-eyebrow text-ink-500">
+            &mdash; the footer on every email Siko sends
+          </span>
+        </p>
+      </div>
+
+      <div class="lg:col-span-7">
+        <EmailReport />
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,56 @@
+---
+// The Socratic probe — Siko's interactive "which step are you stuck on?"
+// state, shown between L1 and L2. Renders dashed yellow boxes over each
+// line of the student's work; the kid taps one (or types instead).
+//
+// We render this as an absolutely-positioned overlay on top of the
+// homework — same as the real product's #annotation-svg layer. The
+// "wrong" tap shows a soft orange ring (mark-probe-tapped-wrong);
+// "tapped" target gets a solid yellow.
+interface Props {
+  /** Optional: visually mark one line as "tapped" to suggest interactivity. */
+  tappedIndex?: number;
+  class?: string;
+}
+const { tappedIndex = -1, class: className = '' } = Astro.props;
+---
+
+<div class:list={['probe-overlay', className]} aria-hidden="true">
+  {/* Four tap targets — positioned to land on the four student lines
+      in HomeworkPage.astro at default sizing. Top values are tuned
+      to overlay the lines on the default rendering. */}
+  {[0, 1, 2, 3].map((i) => (
+    <div
+      class:list={['target', tappedIndex === i && 'tapped']}
+      style={`top: ${134 + i * 36}px;`}
+    />
+  ))}
+</div>
+
+<style>
+  .probe-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .target {
+    position: absolute;
+    left: 56px;
+    width: calc(100% - 112px);
+    height: 32px;
+    border: 1.2px dashed rgba(255, 216, 77, 0.55);
+    background: rgba(255, 216, 77, 0.06);
+    border-radius: 7px;
+    animation: probeAppear 240ms cubic-bezier(.2,.8,.2,1);
+  }
+  .target.tapped {
+    background: rgba(255, 216, 77, 0.16);
+    border: 2px solid rgba(255, 216, 77, 1);
+    border-style: solid;
+    box-shadow: 0 0 14px rgba(255, 216, 77, 0.55);
+  }
+  @keyframes probeAppear {
+    from { opacity: 0; transform: translateY(-2px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>

@@ -1,0 +1,84 @@
+---
+import Bubble from './product/Bubble.astro';
+
+const STEPS = [
+  {
+    n: '01',
+    title: 'Boot it.',
+    body:
+      "Siko lives as a tray icon and an ambient bubble in the corner. There's no main window, no upload step, no "
+      + "separate app to learn. You open your homework where you normally would.",
+  },
+  {
+    n: '02',
+    title: 'Hit ⌘⇧Space.',
+    body:
+      "When the student is stuck, they hit one shortcut. Siko looks at the screen, finds the first wrong step,"
+      + " draws a small yellow box around it, and asks a question. Not the answer — a question.",
+  },
+  {
+    n: '03',
+    title: 'Read the report.',
+    body:
+      "Each session ends with an honest email — to your own address for self-tracking, a parent's for observability, or both."
+      + " What was worked on, what got stuck, how it resolved, plus one specific next-step suggestion. No vague compliments.",
+  },
+];
+---
+
+<section id="how" class="section section-y">
+  <div class="container-page">
+    <div class="max-w-prose-wide">
+      <p class="eyebrow">How it works</p>
+      <h2 class="mt-4 font-serif text-display-2 text-ink-900">
+        Three things to know.
+      </h2>
+      <p class="mt-5 text-ink-600 text-[16.5px] leading-[1.65] max-w-[60ch]">
+        Siko works with whatever&rsquo;s already open &mdash; Pages, a PDF in
+        Preview, Google Docs, a textbook scan. It sits quietly on top and
+        helps when asked.
+      </p>
+    </div>
+
+    <ol class="mt-14 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+      {STEPS.map((s) => (
+        <li class="card-cream p-7 md:p-8 flex flex-col">
+          <span class="font-mono text-[12px] text-gold-400 mb-4">{s.n}</span>
+          <h3 class="font-serif text-[22px] md:text-[24px] text-ink-900 leading-tight">
+            {s.title}
+          </h3>
+          <p class="mt-3 text-ink-600 text-[15px] leading-[1.6]">{s.body}</p>
+
+          {/* Per-step visual */}
+          {s.n === '01' && (
+            <div class="mt-6 flex-1 flex items-end">
+              <Bubble state="watching" text="0:00 · just say the word" />
+            </div>
+          )}
+          {s.n === '02' && (
+            <div class="mt-6 flex-1 flex items-end">
+              <div class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-ink-900 text-cream font-mono text-[12px]">
+                <kbd class="px-1.5 py-0.5 rounded bg-white/10 border border-white/15 text-cream">⌘</kbd>
+                <kbd class="px-1.5 py-0.5 rounded bg-white/10 border border-white/15 text-cream">⇧</kbd>
+                <kbd class="px-1.5 py-0.5 rounded bg-white/10 border border-white/15 text-cream">Space</kbd>
+                <span class="text-ink-300 ml-1">trigger a hint</span>
+              </div>
+            </div>
+          )}
+          {s.n === '03' && (
+            <div class="mt-6 flex-1 flex items-end">
+              <div class="w-full font-mono text-[11px] text-ink-500 leading-relaxed">
+                <div class="flex items-center gap-2">
+                  <span class="text-gold-400">●</span>
+                  <span>sarah@gmail.com</span>
+                </div>
+                <div class="mt-1 text-ink-700">Sarah — Math — 28 min</div>
+                <div class="mt-0.5 text-ink-400">3 hints &middot; 1 walk-through &middot; 1/2 quizzes</div>
+              </div>
+            </div>
+          )}
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
